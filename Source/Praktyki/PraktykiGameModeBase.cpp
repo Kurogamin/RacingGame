@@ -3,3 +3,8 @@
 
 #include "PraktykiGameModeBase.h"
 
+APraktykiGameModeBase::APraktykiGameModeBase()
+{
+
+	
+}
