@@ -7,6 +7,8 @@
 
 #include "CarPawn.generated.h"
 
+class AGameHUD;
+
 UCLASS()
 class PRAKTYKI_API ACarPawn : public APawn {
 	GENERATED_BODY()
@@ -14,6 +16,7 @@ class PRAKTYKI_API ACarPawn : public APawn {
 private:
 	UStaticMeshComponent *CarMesh = nullptr;
 	FVector CurrentSpeed{};
+	AGameHUD *GameHUD = nullptr;
 
 	bool IsBraking = false;
 
@@ -34,6 +37,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float DriftMultiplier = 2.0f;
+
+	void UpdateSpeedText();
 
 protected:
 	// Called when the game starts or when spawned
