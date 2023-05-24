@@ -20,6 +20,8 @@ void ACarPawn::BeginPlay() {
 	}
 
 	this->GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+
+	CarMesh->OnComponentHit.AddDynamic(this, &ACarPawn::OnActorHit);
 }
 
 // Called every frame
@@ -125,8 +127,16 @@ void ACarPawn::ApplySteering(float DeltaTime) {
 	CarMesh->AddTorqueInRadians(Rotation);
 }
 
+void ACarPawn::OnActorHit(UPrimitiveComponent *HitComp, AActor *OtherActor, UPrimitiveComponent *OtherComp,
+		FVector NormalImpulse, const FHitResult &Hit) {
+	UE_LOG(LogTemp, Warning, TEXT("Hit!"));
+	if (OtherActor->ActorHasTag("Grass")) {
+		GameHUD->UpdateCurrentSpeed(666.6f);
+	}
+}
+
 void ACarPawn::UpdateSpeedText() {
 	if (GameHUD) {
-		GameHUD->UpdateCurrentSpeed(CurrentSpeed.Length());
+		//GameHUD->UpdateCurrentSpeed(CurrentSpeed.Length());
 	}
 }

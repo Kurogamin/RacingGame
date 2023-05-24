@@ -58,6 +58,10 @@ public:
 	void ApplyThrottle(float DeltaTime);
 	void ApplySteering(float DeltaTime);
 
+	UFUNCTION()
+	void OnActorHit(UPrimitiveComponent *HitComp, AActor *OtherActor, UPrimitiveComponent *OtherComp,
+			FVector NormalImpulse, const FHitResult &Hit);
+
 	void BrakePressed();
 	void BrakeReleased();
 };
