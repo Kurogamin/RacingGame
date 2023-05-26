@@ -58,7 +58,7 @@ private:
 	float SteerSlowMultiplier = 0.99f;
 
 	void UpdateSpeedText();
-	void UpdateLostTimeText(float AddValue);
+	void AddTimeLost(float AddValue);
 
 protected:
 	// Called when the game starts or when spawned

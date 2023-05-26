@@ -7,23 +7,18 @@ UCarWidget::UCarWidget(const FObjectInitializer &ObjectInitializer) : Super(Obje
 
 void UCarWidget::NativeConstruct() {
 	Super::NativeConstruct();
-
-	CurrentSpeed = 0.0f;
 }
 
-void UCarWidget::SetCurrentSpeed(float NewCurrentSpeed) {
-	CurrentSpeed = NewCurrentSpeed;
-
+void UCarWidget::UpdateCurrentSpeed(float NewCurrentSpeed) {
 	if (CurrentSpeedText) {
-		CurrentSpeedText->SetText(FText::FromString(FString("Current Speed: ") + FString::SanitizeFloat(CurrentSpeed)));
+		CurrentSpeedText->SetText(
+				FText::FromString(FString("Current Speed: ") + FString::SanitizeFloat(NewCurrentSpeed)));
 	}
 }
 
-void UCarWidget::AddLostTime(float AddValue) {
-	CurrentLostTime += AddValue;
-
+void UCarWidget::UpdateLostTime(float NewLostTime) {
 	if (CurrentTimeLostText) {
-		float RoundedLostTime = FMath::RoundToZero(CurrentLostTime * 100) / 100; // Round to 2 decimal places
+		float RoundedLostTime = FMath::RoundToZero(NewLostTime * 100) / 100;
 		FString StringLostTime = FString::Printf(TEXT("%.2f"), RoundedLostTime);
 
 		CurrentTimeLostText->SetText(FText::FromString(FString("Time Lost: ") + StringLostTime + FString(" s")));
@@ -35,8 +30,30 @@ void UCarWidget::UpdateCheckpoints(int CurrentCheckpoints, int MaxCheckpoints) {
 		if (CurrentCheckpoints <= MaxCheckpoints) {
 			CheckpointsText->SetText(FText::FromString(FString("Checkpoints: ") + FString::FromInt(CurrentCheckpoints) +
 					FString("/") + FString::FromInt(MaxCheckpoints)));
-		} else {
-			CheckpointsText->SetText(FText::FromString("FINISHED"));
 		}
+	}
+}
+
+void UCarWidget::UpdateLaps(int CurrentLap, int MaxLaps) {
+	if (LapsText) {
+		if (MaxLaps == 0 || CurrentLap == MaxLaps) {
+			LapsText->SetText(FText::FromString(FString("")));
+			return;
+		}
+
+		if (CurrentLap < MaxLaps) {
+			LapsText->SetText(FText::FromString(
+					FString("Laps: ") + FString::FromInt(CurrentLap) + FString("/") + FString::FromInt(MaxLaps)));
+		}
+	}
+}
+
+void UCarWidget::UpdateCurrentLapTime(float NewCurrentLapTime) {
+	if (CurrentLapTimeText) {
+		float RoundedCurrentLapTime = FMath::RoundToZero(NewCurrentLapTime * 1000) / 1000;
+		FString StringCurrentLapTime = FString::Printf(TEXT("%.2f"), RoundedCurrentLapTime);
+
+		CurrentLapTimeText->SetText(
+				FText::FromString(FString("Current Lap Time: ") + StringCurrentLapTime + FString(" s")));
 	}
 }

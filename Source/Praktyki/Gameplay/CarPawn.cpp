@@ -1,7 +1,8 @@
 // Copyright 2023 Teyon. All Rights Reserved.
 
 #include "CarPawn.h"
-#include "UI/GameHUD.h"
+#include "../GameModes/PraktykiGameModeBase.h"
+#include "../UI/GameHUD.h"
 
 // Sets default values
 ACarPawn::ACarPawn() {
@@ -40,7 +41,6 @@ void ACarPawn::Tick(float DeltaTime) {
 	}
 }
 
-// Called to bind functionality to input
 void ACarPawn::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
@@ -135,7 +135,7 @@ void ACarPawn::ApplySteering(float DeltaTime) {
 void ACarPawn::OnActorHit(UPrimitiveComponent *HitComp, AActor *OtherActor, UPrimitiveComponent *OtherComp,
 		FVector NormalImpulse, const FHitResult &Hit) {
 	if (OtherActor->ActorHasTag("Grass")) {
-		UpdateLostTimeText(0.01f);
+		AddTimeLost(0.01f);
 	}
 }
 
@@ -146,8 +146,7 @@ void ACarPawn::UpdateSpeedText() {
 	}
 }
 
-void ACarPawn::UpdateLostTimeText(float AddValue) {
-	if (GameHUD) {
-		GameHUD->AddLostTime(AddValue);
-	}
+void ACarPawn::AddTimeLost(float AddValue) {
+	ARaceGameModeBase *GameMode = Cast<ARaceGameModeBase>(GetWorld()->GetAuthGameMode());
+	GameMode->AddTimeLost(AddValue);
 }

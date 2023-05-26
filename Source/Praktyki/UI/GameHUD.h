@@ -16,23 +16,19 @@
 UCLASS()
 class PRAKTYKI_API AGameHUD : public AHUD {
 	GENERATED_BODY()
+private:
 public:
 	AGameHUD();
 
 	virtual void DrawHUD() override;
-
 	virtual void BeginPlay() override;
-
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION()
 	void UpdateCurrentSpeed(float NewCurrentSpeed);
-
-	UFUNCTION()
-	void AddLostTime(float AddValue);
-
-	UFUNCTION()
-	void UpdateCheckpoints(int CurrentCheckpoints, int MaxCheckpoints);
+	void UpdateLostTime(float NewLostTime);
+	void UpdateCheckpoints(int CurrentCheckpoints = 0, int MaxCheckpoints = 0);
+	void UpdateLaps(int CurrentLap = 0, int MaxLaps = 0);
+	void UpdateCurrentLapTime(float NewCurrentLapTime);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UCarWidget> CarWidgetClass;

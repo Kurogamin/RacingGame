@@ -14,17 +14,16 @@ UCLASS()
 class PRAKTYKI_API UCarWidget : public UUserWidget {
 	GENERATED_BODY()
 private:
-	float CurrentSpeed = 0.0f;
-	float CurrentLostTime = 0.0f;
-
 public:
 	UCarWidget(const FObjectInitializer &ObjectInitializer);
 
 	virtual void NativeConstruct() override;
 
-	void SetCurrentSpeed(float NewCurrentSpeed);
-	void AddLostTime(float AddValue);
+	void UpdateCurrentSpeed(float NewCurrentSpeed);
+	void UpdateLostTime(float AddValue);
 	void UpdateCheckpoints(int CurrentCheckpoints, int MaxCheckpoints);
+	void UpdateLaps(int CurrentLap = 0, int MaxLaps = 0);
+	void UpdateCurrentLapTime(float NewCurrentLapTime);
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UTextBlock *CurrentSpeedText;
@@ -34,4 +33,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UTextBlock *CheckpointsText;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
+	class UTextBlock *LapsText;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
+	class UTextBlock *CurrentLapTimeText;
 };

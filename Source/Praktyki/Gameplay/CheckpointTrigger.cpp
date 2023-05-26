@@ -1,11 +1,11 @@
 // Copyright 2023 Teyon. All Rights Reserved.
 
 #include "CheckpointTrigger.h"
-#include "PraktykiGameModeBase.h"
+#include "../GameModes/PraktykiGameModeBase.h"
 
 void ACheckpointTrigger::OnCheckpointEnter(UPrimitiveComponent *OverlappedComp, AActor *OtherActor,
 		UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
-	APraktykiGameModeBase *GameMode = Cast<APraktykiGameModeBase>(GetWorld()->GetAuthGameMode());
+	ARaceGameModeBase *GameMode = Cast<ARaceGameModeBase>(GetWorld()->GetAuthGameMode());
 
 	if (OtherActor->ActorHasTag("PlayerCar")) {
 		GameMode->AddCheckpoint(CheckpointId);
