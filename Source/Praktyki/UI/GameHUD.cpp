@@ -33,6 +33,12 @@ void AGameHUD::AddLostTime(float AddValue) {
 	}
 }
 
+void AGameHUD::UpdateCheckpoints(int CurrentCheckpoints, int MaxCheckpoints) {
+	if (CarWidget) {
+		CarWidget->UpdateCheckpoints(CurrentCheckpoints, MaxCheckpoints);
+	}
+}
+
 void AGameHUD::DrawHUD() {
 	Super::DrawHUD();
 }

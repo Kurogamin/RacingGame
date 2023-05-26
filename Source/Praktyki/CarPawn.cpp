@@ -62,13 +62,13 @@ void ACarPawn::SetSteering(float SteeringValue) {
 void ACarPawn::BrakePressed() {
 	IsBraking = true;
 	Acceleration = -Acceleration;
-	AccelerationStep = 0.25f * AccelerationStep;
+	AccelerationStep = 0.1f * AccelerationStep;
 }
 
 void ACarPawn::BrakeReleased() {
 	IsBraking = false;
 	Acceleration = -Acceleration;
-	AccelerationStep = 4.0f * AccelerationStep;
+	AccelerationStep = 10.0f * AccelerationStep;
 }
 
 void ACarPawn::ApplyThrottle(float DeltaTime) {
@@ -111,7 +111,7 @@ void ACarPawn::ApplySteering(float DeltaTime) {
 
 	if (Steering == 0.0f) {
 		float SlowValue = IsBraking ? BrakeSteerSlowMultiplier : SteerSlowMultiplier;
-		CurrentSteering *= SlowValue;
+		CurrentSteering = 0.0f;
 		if (abs(CurrentSteering) < 0.1f) {
 			CurrentSteering = 0.0f;
 		}
@@ -124,7 +124,7 @@ void ACarPawn::ApplySteering(float DeltaTime) {
 	float SteeringAngle = Steering * MaxSteeringAngle;
 
 	CurrentSteering = SteeringAngle;
-	Rotation = FVector(0, 0, SteeringAngle);
+	Rotation = FVector(0, 0, CurrentSteering);
 	Rotation = IsBraking ? Rotation * DriftMultiplier : Rotation;
 
 	CarMesh->SetPhysicsAngularVelocityInDegrees(Rotation);

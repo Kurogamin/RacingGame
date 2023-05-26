@@ -31,6 +31,9 @@ public:
 	UFUNCTION()
 	void AddLostTime(float AddValue);
 
+	UFUNCTION()
+	void UpdateCheckpoints(int CurrentCheckpoints, int MaxCheckpoints);
+
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UCarWidget> CarWidgetClass;
 

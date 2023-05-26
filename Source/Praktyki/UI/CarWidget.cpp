@@ -29,3 +29,14 @@ void UCarWidget::AddLostTime(float AddValue) {
 		CurrentTimeLostText->SetText(FText::FromString(FString("Time Lost: ") + StringLostTime + FString(" s")));
 	}
 }
+
+void UCarWidget::UpdateCheckpoints(int CurrentCheckpoints, int MaxCheckpoints) {
+	if (CheckpointsText) {
+		if (CurrentCheckpoints <= MaxCheckpoints) {
+			CheckpointsText->SetText(FText::FromString(FString("Checkpoints: ") + FString::FromInt(CurrentCheckpoints) +
+					FString("/") + FString::FromInt(MaxCheckpoints)));
+		} else {
+			CheckpointsText->SetText(FText::FromString("FINISHED"));
+		}
+	}
+}

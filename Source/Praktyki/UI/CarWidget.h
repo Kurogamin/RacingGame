@@ -24,10 +24,14 @@ public:
 
 	void SetCurrentSpeed(float NewCurrentSpeed);
 	void AddLostTime(float AddValue);
+	void UpdateCheckpoints(int CurrentCheckpoints, int MaxCheckpoints);
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UTextBlock *CurrentSpeedText;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UTextBlock *CurrentTimeLostText;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
+	class UTextBlock *CheckpointsText;
 };
