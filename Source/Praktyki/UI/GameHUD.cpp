@@ -57,6 +57,12 @@ void AGameHUD::UpdateCurrentLapTime(float NewCurrentLapTime) {
 	}
 }
 
+void AGameHUD::UpdatePreviousLap(float PreviousLapTime, float PreviousLapLostTime) {
+	if (CarWidget) {
+		CarWidget->UpdatePreviousLap(PreviousLapTime, PreviousLapLostTime);
+	}
+}
+
 void AGameHUD::DrawHUD() {
 	Super::DrawHUD();
 }

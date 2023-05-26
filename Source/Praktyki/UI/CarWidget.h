@@ -24,6 +24,7 @@ public:
 	void UpdateCheckpoints(int CurrentCheckpoints, int MaxCheckpoints);
 	void UpdateLaps(int CurrentLap = 0, int MaxLaps = 0);
 	void UpdateCurrentLapTime(float NewCurrentLapTime);
+	void UpdatePreviousLap(float PreviousLapTime, float PreviousLapLostTime);
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UTextBlock *CurrentSpeedText;
@@ -39,4 +40,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UTextBlock *CurrentLapTimeText;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
+	class UTextBlock *PreviousLapTimeText;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
+	class UTextBlock *PreviousLapLostTimeText;
 };

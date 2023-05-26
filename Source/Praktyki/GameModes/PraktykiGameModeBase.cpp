@@ -21,21 +21,23 @@ ARaceGameModeBase::ARaceGameModeBase() {
 }
 
 void ARaceGameModeBase::AddCheckpoint(int CheckpointNumber) {
-	CheckpointsReached.insert(CheckpointNumber);
-	GameHUD->UpdateCheckpoints(CheckpointsReached.size(), NumberOfCheckpoints);
+	CheckpointsReached.Add(CheckpointNumber);
+	int CheckpointsReachedNumber = CheckpointsReached.Num();
+	GameHUD->UpdateCheckpoints(CheckpointsReachedNumber, NumberOfCheckpoints);
 
-	if (CheckpointsReached.size() == NumberOfCheckpoints) {
+	if (CheckpointsReachedNumber == NumberOfCheckpoints) {
 		CanFinishLap = true;
 	}
 }
 
 void ARaceGameModeBase::FinishLap() {
 	if (CanFinishLap) {
+		AddLapData();
 		bool AnotherLap = CurrentLap < NumberOfLaps;
 
 		if (AnotherLap) {
 			CurrentLap++;
-			CheckpointsReached.clear();
+			CheckpointsReached.Empty();
 
 			GameHUD->UpdateCheckpoints(0, NumberOfCheckpoints);
 			GameHUD->UpdateLaps(CurrentLap, NumberOfLaps);
@@ -59,17 +61,28 @@ bool ARaceGameModeBase::GetCanFinishLap() {
 	return CanFinishLap;
 }
 
-void ARaceGameModeBase::AddTimeLost(float AddValue) {
-	TimeLost += AddValue;
+void ARaceGameModeBase::AddLapData() {
+	LapData CurrentLapData = LapData(CurrentLapTime, CurrentLapTimeLost);
+	LapTimes.Add(CurrentLapData);
 
-	GameHUD->UpdateLostTime(TimeLost);
+	CurrentLapTime = 0.0f;
+	CurrentLapTimeLost = 0.0f;
+	LapStartTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+
+	GameHUD->UpdatePreviousLap(CurrentLapData.LapTime, CurrentLapData.LapTimeLost);
+}
+
+void ARaceGameModeBase::AddTimeLost(float AddValue) {
+	CurrentLapTimeLost += AddValue;
+
+	GameHUD->UpdateLostTime(CurrentLapTimeLost);
 }
 
 void ARaceGameModeBase::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
 	float CurrentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
-	float NewTime = CurrentTime - LapStartTime;
+	CurrentLapTime = CurrentTime - LapStartTime;
 
-	GameHUD->UpdateCurrentLapTime(NewTime);
+	GameHUD->UpdateCurrentLapTime(CurrentLapTime);
 }

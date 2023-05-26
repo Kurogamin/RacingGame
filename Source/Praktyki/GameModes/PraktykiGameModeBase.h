@@ -9,6 +9,16 @@
 
 #include "PraktykiGameModeBase.generated.h"
 
+struct LapData {
+	float LapTime;
+	float LapTimeLost;
+
+	LapData(float LapTime, float CurrentLapTimeLost) {
+		this->LapTime = LapTime;
+		this->LapTimeLost = CurrentLapTimeLost;
+	}
+};
+
 /**
  *
  */
@@ -21,18 +31,24 @@ private:
 	// Checkpoints
 	int NumberOfCheckpoints = 0;
 
-	std::set<int> CheckpointsReached;
+	TSet<int> CheckpointsReached;
 	bool CanFinishLap = false;
 
 	// Laps
 	int CurrentLap = 0;
 	float LapStartTime;
+	float CurrentLapTime;
 
 	UPROPERTY(EditAnywhere)
 	int NumberOfLaps = 0;
 
 	// Time Lost
-	float TimeLost = 0.0f;
+	float CurrentLapTimeLost = 0.0f;
+
+	// Lap Times
+	TArray<LapData> LapTimes;
+
+	void AddLapData();
 
 protected:
 	virtual void BeginPlay() override;

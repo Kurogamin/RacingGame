@@ -18,8 +18,8 @@ void UCarWidget::UpdateCurrentSpeed(float NewCurrentSpeed) {
 
 void UCarWidget::UpdateLostTime(float NewLostTime) {
 	if (CurrentTimeLostText) {
-		float RoundedLostTime = FMath::RoundToZero(NewLostTime * 100) / 100;
-		FString StringLostTime = FString::Printf(TEXT("%.2f"), RoundedLostTime);
+		float RoundedLostTime = FMath::RoundToZero(NewLostTime * 1000) / 1000;
+		FString StringLostTime = FString::Printf(TEXT("%.3f"), RoundedLostTime);
 
 		CurrentTimeLostText->SetText(FText::FromString(FString("Time Lost: ") + StringLostTime + FString(" s")));
 	}
@@ -51,9 +51,23 @@ void UCarWidget::UpdateLaps(int CurrentLap, int MaxLaps) {
 void UCarWidget::UpdateCurrentLapTime(float NewCurrentLapTime) {
 	if (CurrentLapTimeText) {
 		float RoundedCurrentLapTime = FMath::RoundToZero(NewCurrentLapTime * 1000) / 1000;
-		FString StringCurrentLapTime = FString::Printf(TEXT("%.2f"), RoundedCurrentLapTime);
+		FString StringCurrentLapTime = FString::Printf(TEXT("%.3f"), RoundedCurrentLapTime);
 
 		CurrentLapTimeText->SetText(
 				FText::FromString(FString("Current Lap Time: ") + StringCurrentLapTime + FString(" s")));
+	}
+}
+
+void UCarWidget::UpdatePreviousLap(float PreviousLapTime, float PreviousLapLostTime) {
+	if (PreviousLapTimeText && PreviousLapLostTimeText) {
+		float RoundedPreviousLapTime = FMath::RoundToZero(PreviousLapTime * 1000) / 1000;
+		float RoundedPreviousLapLostTime = FMath::RoundToZero(PreviousLapLostTime * 1000) / 1000;
+		FString StringPreviousLapTime = FString::Printf(TEXT("%.3f"), RoundedPreviousLapTime);
+		FString StringPreviousLapLostTime = FString::Printf(TEXT("%.3f"), RoundedPreviousLapLostTime);
+
+		PreviousLapTimeText->SetText(
+				FText::FromString(FString("Previous Lap Time: ") + StringPreviousLapTime + FString(" s")));
+		PreviousLapLostTimeText->SetText(
+				FText::FromString(FString("Previous Lap Lost Time: ") + StringPreviousLapLostTime + FString(" s")));
 	}
 }

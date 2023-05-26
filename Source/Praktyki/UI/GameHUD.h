@@ -29,6 +29,7 @@ public:
 	void UpdateCheckpoints(int CurrentCheckpoints = 0, int MaxCheckpoints = 0);
 	void UpdateLaps(int CurrentLap = 0, int MaxLaps = 0);
 	void UpdateCurrentLapTime(float NewCurrentLapTime);
+	void UpdatePreviousLap(float PreviousLapTime, float PreviousLapLostTime);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UCarWidget> CarWidgetClass;
