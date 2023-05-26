@@ -27,6 +27,12 @@ void AGameHUD::UpdateCurrentSpeed(float NewCurrentSpeed) {
 	}
 }
 
+void AGameHUD::AddLostTime(float AddValue) {
+	if (CarWidget) {
+		CarWidget->AddLostTime(AddValue);
+	}
+}
+
 void AGameHUD::DrawHUD() {
 	Super::DrawHUD();
 }

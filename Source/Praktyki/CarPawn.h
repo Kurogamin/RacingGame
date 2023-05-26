@@ -19,18 +19,19 @@ private:
 	AGameHUD *GameHUD = nullptr;
 
 	bool IsBraking = false;
-
 	float Throttle = 0.0f;
 	float Steering = 0.0f;
-
 	float Acceleration = 0.0f;
-	float AccelerationStep = 100000.0f;
+	float CurrentSteering = 0.0f;
 
 	UPROPERTY(EditAnywhere)
-	float MaxAcceleration = 3000000.0f;
+	float AccelerationStep = 1000.0f;
 
 	UPROPERTY(EditAnywhere)
-	float MaxSpeed = 1000.0f;
+	float MaxAcceleration = 50000.0f;
+
+	//UPROPERTY(EditAnywhere)
+	//float MaxSpeed = 1000.0f;
 
 	UPROPERTY(EditAnywhere)
 	float MaxSteeringAngle = 100000000.0f; // ?
@@ -38,7 +39,26 @@ private:
 	UPROPERTY(EditAnywhere)
 	float DriftMultiplier = 2.0f;
 
+	UPROPERTY(EditAnywhere)
+	float BrakeSteerSlowMultiplier = 0.99f;
+
+	UPROPERTY(EditAnywhere)
+	float BrakeSpeedSlowMultiplier = 0.999f;
+
+	UPROPERTY(EditAnywhere)
+	float BrakeAccelerationSlowMultiplier = 0.99f;
+
+	UPROPERTY(EditAnywhere)
+	float SpeedSlowMultiplier = 0.99f;
+
+	UPROPERTY(EditAnywhere)
+	float AccelerationSlowMultiplier = 0.98f;
+
+	UPROPERTY(EditAnywhere)
+	float SteerSlowMultiplier = 0.99f;
+
 	void UpdateSpeedText();
+	void UpdateLostTimeText(float AddValue);
 
 protected:
 	// Called when the game starts or when spawned

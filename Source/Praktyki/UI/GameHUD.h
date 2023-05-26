@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "LostTimeWidget.h"
 
 #include "GameHUD.generated.h"
 
@@ -26,6 +27,9 @@ public:
 
 	UFUNCTION()
 	void UpdateCurrentSpeed(float NewCurrentSpeed);
+
+	UFUNCTION()
+	void AddLostTime(float AddValue);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UCarWidget> CarWidgetClass;

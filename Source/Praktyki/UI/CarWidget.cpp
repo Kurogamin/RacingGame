@@ -8,14 +8,24 @@ UCarWidget::UCarWidget(const FObjectInitializer &ObjectInitializer) : Super(Obje
 void UCarWidget::NativeConstruct() {
 	Super::NativeConstruct();
 
-	this->CurrentSpeed = 0.0f;
+	CurrentSpeed = 0.0f;
 }
 
 void UCarWidget::SetCurrentSpeed(float NewCurrentSpeed) {
-	this->CurrentSpeed = NewCurrentSpeed;
+	CurrentSpeed = NewCurrentSpeed;
 
-	if (this->CurrentSpeedText) {
-		this->CurrentSpeedText->SetText(
-				FText::FromString(FString("Current Speed: ") + FString::SanitizeFloat(this->CurrentSpeed)));
+	if (CurrentSpeedText) {
+		CurrentSpeedText->SetText(FText::FromString(FString("Current Speed: ") + FString::SanitizeFloat(CurrentSpeed)));
+	}
+}
+
+void UCarWidget::AddLostTime(float AddValue) {
+	CurrentLostTime += AddValue;
+
+	if (CurrentTimeLostText) {
+		float RoundedLostTime = FMath::RoundToZero(CurrentLostTime * 100) / 100; // Round to 2 decimal places
+		FString StringLostTime = FString::Printf(TEXT("%.2f"), RoundedLostTime);
+
+		CurrentTimeLostText->SetText(FText::FromString(FString("Time Lost: ") + StringLostTime + FString(" s")));
 	}
 }

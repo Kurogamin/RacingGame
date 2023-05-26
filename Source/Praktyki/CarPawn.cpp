@@ -16,10 +16,10 @@ void ACarPawn::BeginPlay() {
 	auto Component = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("CarMesh"))[0];
 
 	if (Component) {
-		this->CarMesh = Cast<UStaticMeshComponent>(Component);
+		CarMesh = Cast<UStaticMeshComponent>(Component);
 	}
 
-	this->GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
 	CarMesh->OnComponentHit.AddDynamic(this, &ACarPawn::OnActorHit);
 }
@@ -28,12 +28,12 @@ void ACarPawn::BeginPlay() {
 void ACarPawn::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	if (this->CarMesh) {
+	if (CarMesh) {
 		ApplyThrottle(DeltaTime);
 		ApplySteering(DeltaTime);
 
 		if (abs(CurrentSpeed.Length()) < 1.0f) {
-			this->CurrentSpeed = FVector(0.0f);
+			CurrentSpeed = FVector(0.0f);
 		}
 
 		UpdateSpeedText();
@@ -52,11 +52,11 @@ void ACarPawn::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) 
 }
 
 void ACarPawn::SetThrottle(float ThrottleValue) {
-	this->Throttle = ThrottleValue;
+	Throttle = ThrottleValue;
 }
 
 void ACarPawn::SetSteering(float SteeringValue) {
-	this->Steering = SteeringValue;
+	Steering = SteeringValue;
 }
 
 void ACarPawn::BrakePressed() {
@@ -74,19 +74,24 @@ void ACarPawn::BrakeReleased() {
 void ACarPawn::ApplyThrottle(float DeltaTime) {
 	if (IsBraking) {
 		auto CurrentVelocity = CarMesh->GetPhysicsLinearVelocity();
-		this->CurrentSpeed = CurrentVelocity * 0.999f;
-		CarMesh->SetPhysicsLinearVelocity(this->CurrentSpeed);
+		CurrentSpeed = CurrentVelocity * BrakeSpeedSlowMultiplier;
+		CarMesh->SetPhysicsLinearVelocity(CurrentSpeed);
 		UpdateSpeedText();
-		Acceleration = 0.0f;
+		Acceleration *= BrakeAccelerationSlowMultiplier;
 		return;
 	}
 
 	Acceleration += Throttle * AccelerationStep;
 
-	if (abs(Acceleration) <= 0.01f || Throttle == 0.0f) {
+	if (Throttle == 0.0f) {
+		if (abs(Acceleration) > 0.1f) {
+			Acceleration *= AccelerationSlowMultiplier;
+		} else {
+			Acceleration = 0.0f;
+		}
 		auto CurrentVelocity = CarMesh->GetPhysicsLinearVelocity();
-		this->CurrentSpeed = CurrentVelocity * 0.99f;
-		CarMesh->SetPhysicsLinearVelocity(this->CurrentSpeed);
+		CurrentSpeed = CurrentVelocity * SpeedSlowMultiplier;
+		CarMesh->SetPhysicsLinearVelocity(CurrentSpeed);
 		UpdateSpeedText();
 		return;
 	}
@@ -95,48 +100,54 @@ void ACarPawn::ApplyThrottle(float DeltaTime) {
 
 	auto ForwardVector = GetActorForwardVector();
 	auto Force = ForwardVector * Acceleration;
+	CurrentSpeed += Force * DeltaTime;
 
-	CarMesh->SetPhysicsLinearVelocity(FVector(0.0f));
-
-	CarMesh->AddImpulse(Force);
-
-	this->CurrentSpeed = Force;
-
-	if (CurrentSpeed.Length() > MaxSpeed) {
-		CurrentSpeed.Normalize();
-		CurrentSpeed *= MaxSpeed;
-		CarMesh->SetPhysicsLinearVelocity(CurrentSpeed);
-	}
+	CarMesh->SetPhysicsLinearVelocity(CurrentSpeed);
+	CurrentSpeed = Force;
 }
 
 void ACarPawn::ApplySteering(float DeltaTime) {
+	FVector Rotation{};
+
 	if (Steering == 0.0f) {
-		float SlowValue = IsBraking ? 0.99f : 0.999f;
-		auto AngularVelocity = CarMesh->GetPhysicsAngularVelocityInRadians();
-		CarMesh->SetPhysicsAngularVelocityInRadians(AngularVelocity * 0.90f);
+		float SlowValue = IsBraking ? BrakeSteerSlowMultiplier : SteerSlowMultiplier;
+		CurrentSteering *= SlowValue;
+		if (abs(CurrentSteering) < 0.1f) {
+			CurrentSteering = 0.0f;
+		}
+		Rotation = FVector(0, 0, CurrentSteering);
+		Rotation = IsBraking ? Rotation * DriftMultiplier : Rotation;
+		CarMesh->SetPhysicsAngularVelocityInDegrees(Rotation);
 		return;
 	}
 
 	float SteeringAngle = Steering * MaxSteeringAngle;
-	FVector Rotation = FVector(0, 0, SteeringAngle);
 
+	CurrentSteering = SteeringAngle;
+	Rotation = FVector(0, 0, SteeringAngle);
 	Rotation = IsBraking ? Rotation * DriftMultiplier : Rotation;
 
-	auto CurrentVelocity = CarMesh->GetPhysicsLinearVelocity();
+	CarMesh->SetPhysicsAngularVelocityInDegrees(Rotation);
 
-	CarMesh->AddTorqueInRadians(Rotation);
+	//CarMesh->AddTorqueInDegrees(Rotation);
 }
 
 void ACarPawn::OnActorHit(UPrimitiveComponent *HitComp, AActor *OtherActor, UPrimitiveComponent *OtherComp,
 		FVector NormalImpulse, const FHitResult &Hit) {
-	UE_LOG(LogTemp, Warning, TEXT("Hit!"));
 	if (OtherActor->ActorHasTag("Grass")) {
-		GameHUD->UpdateCurrentSpeed(666.6f);
+		UpdateLostTimeText(0.01f);
 	}
 }
 
 void ACarPawn::UpdateSpeedText() {
 	if (GameHUD) {
-		//GameHUD->UpdateCurrentSpeed(CurrentSpeed.Length());
+		auto Speed = (int)(CurrentSpeed.Length() * 0.1f);
+		GameHUD->UpdateCurrentSpeed((float)Speed);
+	}
+}
+
+void ACarPawn::UpdateLostTimeText(float AddValue) {
+	if (GameHUD) {
+		GameHUD->AddLostTime(AddValue);
 	}
 }
