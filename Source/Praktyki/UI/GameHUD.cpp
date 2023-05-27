@@ -21,6 +21,14 @@ void AGameHUD::BeginPlay() {
 			UpdateCheckpoints(0, GameMode->GetNumberOfCheckpoints());
 		}
 	}
+
+	if (MainMenuWidgetClass) {
+		MainMenuWidget = CreateWidget<UMainMenuWidget>(GetWorld(), MainMenuWidgetClass);
+
+		if (MainMenuWidget) {
+			MainMenuWidget->AddToViewport();
+		}
+	}
 }
 
 void AGameHUD::Tick(float DeltaTime) {

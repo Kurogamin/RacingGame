@@ -6,7 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "LostTimeWidget.h"
+#include "MainMenuWidget.h"
 
 #include "GameHUD.generated.h"
 
@@ -34,6 +34,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UCarWidget> CarWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UMainMenuWidget> MainMenuWidgetClass;
+
 private:
 	UCarWidget *CarWidget;
+	UMainMenuWidget *MainMenuWidget;
 };
