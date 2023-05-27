@@ -14,15 +14,14 @@ ACarPawn::ACarPawn() {
 void ACarPawn::BeginPlay() {
 	Super::BeginPlay();
 
-	auto Component = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("CarMesh"))[0];
+	auto Components = GetComponentsByTag(USkeletalMeshComponent::StaticClass(), FName("CarMesh"));
 
-	if (Component) {
-		CarMesh = Cast<UStaticMeshComponent>(Component);
+	if (Components.Num() > 0) {
+		CarMesh = Cast<USkeletalMeshComponent>(Components[0]);
+		CarMesh->OnComponentHit.AddDynamic(this, &ACarPawn::OnActorHit);
 	}
 
 	GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-
-	CarMesh->OnComponentHit.AddDynamic(this, &ACarPawn::OnActorHit);
 }
 
 // Called every frame
@@ -102,6 +101,8 @@ void ACarPawn::ApplyThrottle(float DeltaTime) {
 	auto Force = ForwardVector * Acceleration;
 	CurrentSpeed += Force * DeltaTime;
 
+	auto Gravity = GetWorld()->GetGravityZ();
+	CurrentSpeed.Z = Gravity * DeltaTime;
 	CarMesh->SetPhysicsLinearVelocity(CurrentSpeed);
 	CurrentSpeed = Force;
 }

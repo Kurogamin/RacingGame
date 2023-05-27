@@ -14,7 +14,7 @@ class PRAKTYKI_API ACarPawn : public APawn {
 	GENERATED_BODY()
 
 private:
-	UStaticMeshComponent *CarMesh = nullptr;
+	USkeletalMeshComponent *CarMesh = nullptr;
 	FVector CurrentSpeed{};
 	AGameHUD *GameHUD = nullptr;
 
@@ -25,16 +25,16 @@ private:
 	float CurrentSteering = 0.0f;
 
 	UPROPERTY(EditAnywhere)
-	float AccelerationStep = 1000.0f;
+	float AccelerationStep = 10.0f;
 
 	UPROPERTY(EditAnywhere)
-	float MaxAcceleration = 50000.0f;
+	float MaxAcceleration = 6500.0f;
 
 	//UPROPERTY(EditAnywhere)
 	//float MaxSpeed = 1000.0f;
 
 	UPROPERTY(EditAnywhere)
-	float MaxSteeringAngle = 100000000.0f; // ?
+	float MaxSteeringAngle = 40.0f; // ?
 
 	UPROPERTY(EditAnywhere)
 	float DriftMultiplier = 2.0f;
