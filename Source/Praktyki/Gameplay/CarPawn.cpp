@@ -103,6 +103,7 @@ void ACarPawn::ApplyThrottle(float DeltaTime) {
 
 	auto Gravity = GetWorld()->GetGravityZ();
 	CurrentSpeed.Z = Gravity * DeltaTime;
+
 	CarMesh->SetPhysicsLinearVelocity(CurrentSpeed);
 	CurrentSpeed = Force;
 }

@@ -2,6 +2,14 @@
 
 #include "CarWidget.h"
 
+FString GetStringWithTag(FString Tag, FString Text) {
+	return FString("<") + Tag + FString(">") + Text + FString("</>");
+}
+
+FString GetStringWithTag(FString Tag, float Text) {
+	return FString("<") + Tag + FString(">") + FString::SanitizeFloat(Text) + FString("</>");
+}
+
 UCarWidget::UCarWidget(const FObjectInitializer &ObjectInitializer) : Super(ObjectInitializer) {
 }
 
@@ -11,12 +19,8 @@ void UCarWidget::NativeConstruct() {
 
 void UCarWidget::UpdateCurrentSpeed(float NewCurrentSpeed) {
 	if (CurrentSpeedText) {
-		FString SpeedString =
-				FString::Printf(TEXT("<RichText><Font color='#FFFFFF'>Current Speed: </Font> <Font "
-									 "color='#00FF00'>%d</Font>/<Font color='#FF0000'>%d</Font></RichText>"),
-						NewCurrentSpeed);
-
-		CurrentSpeedText->SetText(FText::FromString(SpeedString));
+		FString CurrentSpeedString = GetStringWithTag("Green", NewCurrentSpeed);
+		CurrentSpeedText->SetText(FText::FromString(FString("Current Speed: ") + CurrentSpeedString));
 	}
 }
 

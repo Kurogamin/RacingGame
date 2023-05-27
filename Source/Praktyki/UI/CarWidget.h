@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Blueprint/UserWidget.h"
+#include "Components/RichTextBlock.h"
 #include "CoreMinimal.h"
 #include "Runtime/UMG/Public/UMG.h"
 
@@ -27,7 +28,7 @@ public:
 	void UpdatePreviousLap(float PreviousLapTime, float PreviousLapLostTime);
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
-	class UTextBlock *CurrentSpeedText;
+	class URichTextBlock *CurrentSpeedText;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UTextBlock *CurrentTimeLostText;
