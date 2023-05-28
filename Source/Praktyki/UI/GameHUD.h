@@ -7,6 +7,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "MainMenuWidget.h"
+#include "ResultsMenuWidget.h"
 
 #include "GameHUD.generated.h"
 
@@ -37,11 +38,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UMainMenuWidget> MainMenuWidgetClass;
 
-	//UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	//TSubclassOf<URaceFinishedWidget> RaceFinishedWidgetClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UResultsMenuWidget> ResultsMenuWidgetClass;
 
 private:
 	UCarWidget *CarWidget;
 	UMainMenuWidget *MainMenuWidget;
-	//URaceFinishedWidget *RaceFinishedWidget;
+	UResultsMenuWidget *ResultsMenuWidget;
 };

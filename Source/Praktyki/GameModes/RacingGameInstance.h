@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "../Utility.h"
+#include "../Gameplay/LapData.h"
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 
@@ -17,12 +17,14 @@ class PRAKTYKI_API URacingGameInstance : public UGameInstance {
 private:
 	int NumberOfLaps;
 	int NumberOfSeconds;
+	RaceType CurrentRaceType;
 
 public:
 	URacingGameInstance();
 
 	int GetNumberOfLaps() const;
 	int GetNumberOfSeconds() const;
+	RaceType GetCurrentRaceType() const;
 
 	void SetNumberOfLaps(int NewNumberOfLaps);
 	void SetNumberOfSeconds(int NewNumberOfSeconds);

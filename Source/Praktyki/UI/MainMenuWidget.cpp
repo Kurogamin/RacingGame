@@ -3,7 +3,8 @@
 #include "MainMenuWidget.h"
 #include "../GameModes/RacingGameInstance.h"
 
-UMainMenuWidget::UMainMenuWidget(const FObjectInitializer &ObjectInitializer) : Super(ObjectInitializer) {
+UMainMenuWidget::UMainMenuWidget(const FObjectInitializer &ObjectInitializer) :
+		Super(ObjectInitializer) {
 }
 
 void UMainMenuWidget::NativeConstruct() {
@@ -32,7 +33,8 @@ void UMainMenuWidget::NativeConstruct() {
 
 void UMainMenuWidget::OpenRaceLevel() {
 	auto World = GetWorld();
-	URacingGameInstance *GameInstance = Cast<URacingGameInstance>(UGameplayStatics::GetGameInstance(World));
+	URacingGameInstance *GameInstance =
+			Cast<URacingGameInstance>(UGameplayStatics::GetGameInstance(World));
 	GameInstance->SetNumberOfLaps(NumberOfLaps);
 	GameInstance->SetNumberOfSeconds(NumberOfSeconds);
 
@@ -58,6 +60,9 @@ void UMainMenuWidget::OnGameTypeChanged(FString SelectedItem, ESelectInfo::Type 
 			GameTimeSlider->SetVisibility(ESlateVisibility::Visible);
 			GameLapsSlider->SetVisibility(ESlateVisibility::Hidden);
 		} else if (SelectedItem == "Multi Lap") {
+			if (NumberOfLaps == 1) {
+				NumberOfLaps = 2;
+			}
 			GameTimeSlider->SetVisibility(ESlateVisibility::Hidden);
 			GameLapsSlider->SetVisibility(ESlateVisibility::Visible);
 		}
@@ -69,9 +74,11 @@ void UMainMenuWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime) {
 
 	if (SliderText) {
 		if (GameTypeComboBox->GetSelectedIndex() == 0) {
-			SliderText->SetText(FText::FromString("Game length: " + FString::FromInt(NumberOfSeconds) + " seconds"));
+			SliderText->SetText(FText::FromString(
+					"Game length: " + FString::FromInt(NumberOfSeconds) + " seconds"));
 		} else if (GameTypeComboBox->GetSelectedIndex() == 1) {
-			SliderText->SetText(FText::FromString("Number of laps: " + FString::FromInt(NumberOfLaps)));
+			SliderText->SetText(
+					FText::FromString("Number of laps: " + FString::FromInt(NumberOfLaps)));
 		}
 	}
 }

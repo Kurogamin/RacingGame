@@ -13,8 +13,18 @@ int URacingGameInstance::GetNumberOfSeconds() const {
 	return NumberOfSeconds;
 }
 
+RaceType URacingGameInstance::GetCurrentRaceType() const {
+	return CurrentRaceType;
+}
+
 void URacingGameInstance::SetNumberOfLaps(int NewNumberOfLaps) {
 	NumberOfLaps = NewNumberOfLaps;
+
+	if (NumberOfLaps == 1) {
+		CurrentRaceType = RaceType::Time;
+	} else {
+		CurrentRaceType = RaceType::Laps;
+	}
 }
 
 void URacingGameInstance::SetNumberOfSeconds(int NewNumberOfSeconds) {

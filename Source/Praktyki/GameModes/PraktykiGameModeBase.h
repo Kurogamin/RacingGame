@@ -2,25 +2,13 @@
 
 #pragma once
 
+#include "../Gameplay/LapData.h"
 #include "../UI/GameHUD.h"
-#include "../Utility.h"
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include <set>
 
 #include "PraktykiGameModeBase.generated.h"
-
-struct LapData {
-	float LapTime;
-	float LapTimeLost;
-
-	LapData(float LapTime, float CurrentLapTimeLost) {
-		this->LapTime = LapTime;
-		this->LapTimeLost = CurrentLapTimeLost;
-	}
-};
-
-enum RaceType { Time, Laps };
 
 /**
  *

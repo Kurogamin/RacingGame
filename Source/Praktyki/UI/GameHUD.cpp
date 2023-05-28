@@ -30,13 +30,13 @@ void AGameHUD::BeginPlay() {
 		}
 	}
 
-	//if (RaceFinishedWidgetClass) {
-	//	RaceFinishedWidget = CreateWidget<URaceFinishedWidget>(GetWorld(), RaceFinishedWidgetClass);
-	//
-	//	if (RaceFinishedWidget) {
-	//		RaceFinishedWidget->AddToViewport();
-	//	}
-	//}
+	if (ResultsMenuWidgetClass) {
+		ResultsMenuWidget = CreateWidget<UResultsMenuWidget>(GetWorld(), ResultsMenuWidgetClass);
+
+		if (ResultsMenuWidget) {
+			ResultsMenuWidget->AddToViewport();
+		}
+	}
 }
 
 void AGameHUD::Tick(float DeltaTime) {

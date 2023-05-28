@@ -22,7 +22,7 @@ void ARaceGameModeBase::BeginPlay() {
 
 	NumberOfLaps = GameInstance->GetNumberOfLaps();
 
-	CurrentRaceType = NumberOfLaps == 1 ? RaceType::Time : RaceType::Laps;
+	CurrentRaceType = GameInstance->GetCurrentRaceType();
 
 	if (CurrentRaceType == RaceType::Time) {
 		NumberOfSeconds = GameInstance->GetNumberOfSeconds();
@@ -49,7 +49,7 @@ void ARaceGameModeBase::AddCheckpoint(int CheckpointNumber) {
 void ARaceGameModeBase::FinishLap() {
 	if (CanFinishLap) {
 		AddLapData();
-		bool AnotherLap = CurrentLap < NumberOfLaps;
+		bool AnotherLap = CurrentLap < NumberOfLaps - 1;
 
 		if (AnotherLap) {
 			CurrentLap++;
@@ -62,6 +62,7 @@ void ARaceGameModeBase::FinishLap() {
 
 		GameHUD->UpdateCheckpoints();
 		GameHUD->UpdateLaps();
+		UGameplayStatics::OpenLevel(GetWorld(), FName("MainMenuMap"));
 	}
 }
 
