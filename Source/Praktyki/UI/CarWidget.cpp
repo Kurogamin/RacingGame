@@ -1,6 +1,7 @@
 // Copyright 2023 Teyon. All Rights Reserved.
 
 #include "CarWidget.h"
+#include "../Gameplay/LapData.h"
 
 FString GetStringWithTag(FString Tag, FString Text) {
 	return FString("<") + Tag + FString(">") + Text + FString("</>");
@@ -20,24 +21,26 @@ void UCarWidget::NativeConstruct() {
 void UCarWidget::UpdateCurrentSpeed(float NewCurrentSpeed) {
 	if (CurrentSpeedText) {
 		FString CurrentSpeedString = GetStringWithTag("Green", NewCurrentSpeed);
-		CurrentSpeedText->SetText(FText::FromString(FString("Current Speed: ") + CurrentSpeedString));
+		CurrentSpeedText->SetText(
+				FText::FromString(FString("Current Speed: ") + CurrentSpeedString));
 	}
 }
 
 void UCarWidget::UpdateLostTime(float NewLostTime) {
 	if (CurrentTimeLostText) {
-		float RoundedLostTime = FMath::RoundToZero(NewLostTime * 1000) / 1000;
-		FString StringLostTime = FString::Printf(TEXT("%.3f"), RoundedLostTime);
+		FString StringLostTime = LapData::FloatToRoundedString(NewLostTime);
 
-		CurrentTimeLostText->SetText(FText::FromString(FString("Time Lost: ") + StringLostTime + FString(" s")));
+		CurrentTimeLostText->SetText(
+				FText::FromString(FString("Time Lost: ") + StringLostTime + FString(" s")));
 	}
 }
 
 void UCarWidget::UpdateCheckpoints(int CurrentCheckpoints, int MaxCheckpoints) {
 	if (CheckpointsText) {
 		if (CurrentCheckpoints <= MaxCheckpoints) {
-			CheckpointsText->SetText(FText::FromString(FString("Checkpoints: ") + FString::FromInt(CurrentCheckpoints) +
-					FString("/") + FString::FromInt(MaxCheckpoints)));
+			CheckpointsText->SetText(FText::FromString(FString("Checkpoints: ") +
+					FString::FromInt(CurrentCheckpoints) + FString("/") +
+					FString::FromInt(MaxCheckpoints)));
 		}
 	}
 }
@@ -50,32 +53,30 @@ void UCarWidget::UpdateLaps(int CurrentLap, int MaxLaps) {
 		}
 
 		if (CurrentLap < MaxLaps) {
-			LapsText->SetText(FText::FromString(
-					FString("Laps: ") + FString::FromInt(CurrentLap) + FString("/") + FString::FromInt(MaxLaps)));
+			LapsText->SetText(FText::FromString(FString("Laps: ") + FString::FromInt(CurrentLap) +
+					FString("/") + FString::FromInt(MaxLaps)));
 		}
 	}
 }
 
 void UCarWidget::UpdateCurrentLapTime(float NewCurrentLapTime) {
 	if (CurrentLapTimeText) {
-		float RoundedCurrentLapTime = FMath::RoundToZero(NewCurrentLapTime * 1000) / 1000;
-		FString StringCurrentLapTime = FString::Printf(TEXT("%.3f"), RoundedCurrentLapTime);
+		FString StringCurrentLapTime = LapData::FloatToRoundedString(NewCurrentLapTime);
 
-		CurrentLapTimeText->SetText(
-				FText::FromString(FString("Current Lap Time: ") + StringCurrentLapTime + FString(" s")));
+		CurrentLapTimeText->SetText(FText::FromString(
+				FString("Current Lap Time: ") + StringCurrentLapTime + FString(" s")));
 	}
 }
 
-void UCarWidget::UpdatePreviousLap(float PreviousLapTime, float PreviousLapLostTime) {
+void UCarWidget::UpdatePreviousLap(LapData NewPreviousLapData) {
 	if (PreviousLapTimeText && PreviousLapLostTimeText) {
-		float RoundedPreviousLapTime = FMath::RoundToZero(PreviousLapTime * 1000) / 1000;
-		float RoundedPreviousLapLostTime = FMath::RoundToZero(PreviousLapLostTime * 1000) / 1000;
-		FString StringPreviousLapTime = FString::Printf(TEXT("%.3f"), RoundedPreviousLapTime);
-		FString StringPreviousLapLostTime = FString::Printf(TEXT("%.3f"), RoundedPreviousLapLostTime);
+		FString StringPreviousLapTime = LapData::FloatToRoundedString(NewPreviousLapData.LapTime);
+		FString StringPreviousLapLostTime =
+				LapData::FloatToRoundedString(NewPreviousLapData.LapTimeLost);
 
-		PreviousLapTimeText->SetText(
-				FText::FromString(FString("Previous Lap Time: ") + StringPreviousLapTime + FString(" s")));
-		PreviousLapLostTimeText->SetText(
-				FText::FromString(FString("Previous Lap Lost Time: ") + StringPreviousLapLostTime + FString(" s")));
+		PreviousLapTimeText->SetText(FText::FromString(
+				FString("Previous Lap Time: ") + StringPreviousLapTime + FString(" s")));
+		PreviousLapLostTimeText->SetText(FText::FromString(
+				FString("Previous Lap Lost Time: ") + StringPreviousLapLostTime + FString(" s")));
 	}
 }

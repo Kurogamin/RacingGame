@@ -34,6 +34,8 @@ void ARaceGameModeBase::BeginPlay() {
 
 ARaceGameModeBase::ARaceGameModeBase() {
 	PrimaryActorTick.bCanEverTick = true;
+
+	BestLapData = LapData(1000.0f, 0.0f);
 }
 
 void ARaceGameModeBase::AddCheckpoint(int CheckpointNumber) {
@@ -49,7 +51,7 @@ void ARaceGameModeBase::AddCheckpoint(int CheckpointNumber) {
 void ARaceGameModeBase::FinishLap() {
 	if (CanFinishLap) {
 		AddLapData();
-		bool AnotherLap = CurrentLap < NumberOfLaps - 1;
+		bool AnotherLap = (NumberOfLaps == 1) || (CurrentLap < NumberOfLaps - 1);
 
 		if (AnotherLap) {
 			CurrentLap++;
@@ -60,9 +62,7 @@ void ARaceGameModeBase::FinishLap() {
 			return;
 		}
 
-		GameHUD->UpdateCheckpoints();
-		GameHUD->UpdateLaps();
-		UGameplayStatics::OpenLevel(GetWorld(), FName("MainMenuMap"));
+		EndCurrentRace();
 	}
 }
 
@@ -80,13 +80,16 @@ bool ARaceGameModeBase::GetCanFinishLap() {
 
 void ARaceGameModeBase::AddLapData() {
 	LapData CurrentLapData = LapData(CurrentLapTime, CurrentLapTimeLost);
+	if (CurrentLapData > BestLapData) {
+		BestLapData = CurrentLapData;
+	}
 	LapTimes.Add(CurrentLapData);
 
 	CurrentLapTime = 0.0f;
 	CurrentLapTimeLost = 0.0f;
 	LapStartTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
 
-	GameHUD->UpdatePreviousLap(CurrentLapData.LapTime, CurrentLapData.LapTimeLost);
+	GameHUD->UpdatePreviousLap(CurrentLapData);
 }
 
 void ARaceGameModeBase::AddTimeLost(float AddValue) {
@@ -106,7 +109,9 @@ void ARaceGameModeBase::Tick(float DeltaTime) {
 }
 
 void ARaceGameModeBase::EndCurrentRace() {
+	auto GameInstance = Cast<URacingGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	GameInstance->SetBestLap(BestLapData);
 	GameHUD->UpdateCheckpoints();
 	GameHUD->UpdateLaps();
-	UGameplayStatics::OpenLevel(GetWorld(), FName("MainMenuMap"));
+	UGameplayStatics::OpenLevel(GetWorld(), FName("ResultsMenuMap"));
 }

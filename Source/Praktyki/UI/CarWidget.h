@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "../Gameplay/LapData.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/RichTextBlock.h"
 #include "CoreMinimal.h"
@@ -25,7 +26,7 @@ public:
 	void UpdateCheckpoints(int CurrentCheckpoints, int MaxCheckpoints);
 	void UpdateLaps(int CurrentLap = 0, int MaxLaps = 0);
 	void UpdateCurrentLapTime(float NewCurrentLapTime);
-	void UpdatePreviousLap(float PreviousLapTime, float PreviousLapLostTime);
+	void UpdatePreviousLap(LapData NewPreviousLapData);
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class URichTextBlock *CurrentSpeedText;

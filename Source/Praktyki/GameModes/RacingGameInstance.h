@@ -17,6 +17,7 @@ class PRAKTYKI_API URacingGameInstance : public UGameInstance {
 private:
 	int NumberOfLaps;
 	int NumberOfSeconds;
+	LapData BestLapData;
 	RaceType CurrentRaceType;
 
 public:
@@ -24,8 +25,10 @@ public:
 
 	int GetNumberOfLaps() const;
 	int GetNumberOfSeconds() const;
+	LapData GetBestLap() const;
 	RaceType GetCurrentRaceType() const;
 
 	void SetNumberOfLaps(int NewNumberOfLaps);
 	void SetNumberOfSeconds(int NewNumberOfSeconds);
+	void SetBestLap(LapData NewBestLap);
 };

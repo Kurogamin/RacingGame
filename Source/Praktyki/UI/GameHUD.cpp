@@ -73,10 +73,22 @@ void AGameHUD::UpdateCurrentLapTime(float NewCurrentLapTime) {
 	}
 }
 
-void AGameHUD::UpdatePreviousLap(float PreviousLapTime, float PreviousLapLostTime) {
+void AGameHUD::UpdatePreviousLap(LapData NewPreviousLapData) {
 	if (CarWidget) {
-		CarWidget->UpdatePreviousLap(PreviousLapTime, PreviousLapLostTime);
+		CarWidget->UpdatePreviousLap(NewPreviousLapData);
 	}
+}
+
+bool AGameHUD::UpdateBestLap(LapData NewBestLap) {
+	if (ResultsMenuWidget) {
+		if (NewBestLap.LapTime == 0.0f) {
+			ResultsMenuWidget->UpdateBestLap();
+		}
+		ResultsMenuWidget->UpdateBestLap(NewBestLap);
+		return true;
+	}
+
+	return false;
 }
 
 void AGameHUD::DrawHUD() {

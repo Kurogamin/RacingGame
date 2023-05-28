@@ -13,6 +13,10 @@ int URacingGameInstance::GetNumberOfSeconds() const {
 	return NumberOfSeconds;
 }
 
+LapData URacingGameInstance::GetBestLap() const {
+	return BestLapData;
+}
+
 RaceType URacingGameInstance::GetCurrentRaceType() const {
 	return CurrentRaceType;
 }
@@ -29,4 +33,8 @@ void URacingGameInstance::SetNumberOfLaps(int NewNumberOfLaps) {
 
 void URacingGameInstance::SetNumberOfSeconds(int NewNumberOfSeconds) {
 	NumberOfSeconds = NewNumberOfSeconds;
+}
+
+void URacingGameInstance::SetBestLap(LapData NewBestLap) {
+	BestLapData = NewBestLap;
 }

@@ -18,6 +18,8 @@ UCLASS()
 class PRAKTYKI_API AGameHUD : public AHUD {
 	GENERATED_BODY()
 private:
+	bool BestLapSet = false;
+
 public:
 	AGameHUD();
 
@@ -30,7 +32,8 @@ public:
 	void UpdateCheckpoints(int CurrentCheckpoints = 0, int MaxCheckpoints = 0);
 	void UpdateLaps(int CurrentLap = 0, int MaxLaps = 0);
 	void UpdateCurrentLapTime(float NewCurrentLapTime);
-	void UpdatePreviousLap(float PreviousLapTime, float PreviousLapLostTime);
+	void UpdatePreviousLap(LapData NewPreviousLapData);
+	bool UpdateBestLap(LapData NewBestLapData);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UCarWidget> CarWidgetClass;
