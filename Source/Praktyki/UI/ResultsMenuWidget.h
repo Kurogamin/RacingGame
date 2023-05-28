@@ -1,14 +1,15 @@
 // Copyright 2023 Teyon. All Rights Reserved.
 
 #pragma once
-
 #include "../Gameplay/LapData.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/RichTextBlock.h"
 #include "CoreMinimal.h"
-#include "Runtime/UMG/Public/UMG.h"
 
 #include "ResultsMenuWidget.generated.h"
+
+class UButton;
+class URichTextBlock;
+struct LapData;
 
 /**
  *

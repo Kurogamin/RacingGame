@@ -2,7 +2,10 @@
 
 #include "PraktykiGameModeBase.h"
 #include "../Gameplay/CheckpointTrigger.h"
+#include "../Gameplay/LapData.h"
+#include "../UI/GameHUD.h"
 #include "RacingGameInstance.h"
+#include <Kismet/GameplayStatics.h>
 
 void ARaceGameModeBase::BeginPlay() {
 	Super::BeginPlay();
@@ -35,7 +38,7 @@ void ARaceGameModeBase::BeginPlay() {
 ARaceGameModeBase::ARaceGameModeBase() {
 	PrimaryActorTick.bCanEverTick = true;
 
-	BestLapData = LapData(1000.0f, 0.0f);
+	BestLapData = LapData{};
 }
 
 void ARaceGameModeBase::AddCheckpoint(int CheckpointNumber) {

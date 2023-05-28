@@ -1,7 +1,6 @@
 // Copyright 2023 Teyon. All Rights Reserved.
 
 #pragma once
-
 #include "../Gameplay/LapData.h"
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"

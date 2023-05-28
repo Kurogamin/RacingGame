@@ -1,6 +1,8 @@
 // Copyright 2023 Teyon. All Rights Reserved.
 
 #include "ResultsMenuWidget.h"
+#include "Components/RichTextBlock.h"
+#include "Runtime/UMG/Public/UMG.h"
 
 UResultsMenuWidget::UResultsMenuWidget(const FObjectInitializer &ObjectInitializer) :
 		Super(ObjectInitializer) {

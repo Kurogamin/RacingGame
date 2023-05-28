@@ -2,6 +2,8 @@
 
 #include "CarWidget.h"
 #include "../Gameplay/LapData.h"
+#include "Components/RichTextBlock.h"
+#include "Runtime/UMG/Public/UMG.h"
 
 FString GetStringWithTag(FString Tag, FString Text) {
 	return FString("<") + Tag + FString(">") + Text + FString("</>");

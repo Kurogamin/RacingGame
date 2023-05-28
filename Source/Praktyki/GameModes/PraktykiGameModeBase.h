@@ -3,12 +3,14 @@
 #pragma once
 
 #include "../Gameplay/LapData.h"
-#include "../UI/GameHUD.h"
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include <set>
 
 #include "PraktykiGameModeBase.generated.h"
+
+class AGameHUD;
+enum RaceType;
 
 /**
  *

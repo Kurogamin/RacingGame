@@ -4,11 +4,13 @@
 
 #include "../Gameplay/LapData.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/RichTextBlock.h"
 #include "CoreMinimal.h"
-#include "Runtime/UMG/Public/UMG.h"
 
 #include "CarWidget.generated.h"
+
+class URichTextBlock;
+class UTextBlock;
+
 /**
  *
  */

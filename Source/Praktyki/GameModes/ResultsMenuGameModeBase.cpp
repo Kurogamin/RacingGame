@@ -4,6 +4,7 @@
 #include "../Gameplay/LapData.h"
 #include "../UI/GameHUD.h"
 #include "RacingGameInstance.h"
+#include <Kismet/GameplayStatics.h>
 
 AResultsMenuGameModeBase::AResultsMenuGameModeBase() {
 	PrimaryActorTick.bCanEverTick = true;

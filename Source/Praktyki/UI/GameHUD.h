@@ -2,14 +2,16 @@
 
 #pragma once
 
-#include "CarWidget.h"
 #include "Components/WidgetComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "MainMenuWidget.h"
-#include "ResultsMenuWidget.h"
 
 #include "GameHUD.generated.h"
+
+class UCarWidget;
+class UMainMenuWidget;
+class UResultsMenuWidget;
+struct LapData;
 
 /**
  *

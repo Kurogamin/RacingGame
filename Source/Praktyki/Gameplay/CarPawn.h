@@ -25,13 +25,13 @@ private:
 	float CurrentSteering = 0.0f;
 
 	UPROPERTY(EditAnywhere)
-	float AccelerationStep = 10.0f;
+	float AccelerationStep = 1.0f;
 
 	UPROPERTY(EditAnywhere)
-	float MaxAcceleration = 6500.0f;
+	float MaxAcceleration = 650.0f;
 
-	//UPROPERTY(EditAnywhere)
-	//float MaxSpeed = 1000.0f;
+	UPROPERTY(EditAnywhere)
+	float MaxSpeed = 6500.0f;
 
 	UPROPERTY(EditAnywhere)
 	float MaxSteeringAngle = 40.0f; // ?
@@ -79,8 +79,8 @@ public:
 	void ApplySteering(float DeltaTime);
 
 	UFUNCTION()
-	void OnActorHit(UPrimitiveComponent *HitComp, AActor *OtherActor, UPrimitiveComponent *OtherComp,
-			FVector NormalImpulse, const FHitResult &Hit);
+	void OnActorHit(UPrimitiveComponent *HitComp, AActor *OtherActor,
+			UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit);
 
 	void BrakePressed();
 	void BrakeReleased();

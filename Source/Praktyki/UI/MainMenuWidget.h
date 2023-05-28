@@ -1,15 +1,17 @@
 // Copyright 2023 Teyon. All Rights Reserved.
 
 #pragma once
-
+#include "../Gameplay/LapData.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/ComboBoxString.h"
-#include "Components/RichTextBlock.h"
-#include "Components/Slider.h"
 #include "CoreMinimal.h"
-#include "Runtime/UMG/Public/UMG.h"
 
 #include "MainMenuWidget.generated.h"
+
+class UButton;
+class UComboBoxString;
+class URichTextBlock;
+class USlider;
+
 /**
  *
  */

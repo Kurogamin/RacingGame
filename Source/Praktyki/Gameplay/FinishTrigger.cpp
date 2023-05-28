@@ -2,9 +2,11 @@
 
 #include "FinishTrigger.h"
 #include "../GameModes/PraktykiGameModeBase.h"
+#include "Components/BoxComponent.h"
 
 void AFinishTrigger::OnFinishEnter(UPrimitiveComponent *OverlappedComp, AActor *OtherActor,
-		UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
+		UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+		const FHitResult &SweepResult) {
 	ARaceGameModeBase *GameMode = Cast<ARaceGameModeBase>(GetWorld()->GetAuthGameMode());
 
 	if (OtherActor->ActorHasTag("PlayerCar")) {

@@ -2,6 +2,9 @@
 
 #include "GameHUD.h"
 #include "../GameModes/PraktykiGameModeBase.h"
+#include "CarWidget.h"
+#include "MainMenuWidget.h"
+#include "ResultsMenuWidget.h"
 
 AGameHUD::AGameHUD() {
 }

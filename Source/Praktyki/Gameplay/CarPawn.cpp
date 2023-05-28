@@ -6,7 +6,8 @@
 
 // Sets default values
 ACarPawn::ACarPawn() {
-	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if
+	// you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -60,48 +61,25 @@ void ACarPawn::SetSteering(float SteeringValue) {
 
 void ACarPawn::BrakePressed() {
 	IsBraking = true;
-	Acceleration = -Acceleration;
-	AccelerationStep = 0.1f * AccelerationStep;
+	//Acceleration = -Acceleration;
+	//AccelerationStep = 0.1f * AccelerationStep;
 }
 
 void ACarPawn::BrakeReleased() {
 	IsBraking = false;
-	Acceleration = -Acceleration;
-	AccelerationStep = 10.0f * AccelerationStep;
+	//Acceleration = -Acceleration;
+	//AccelerationStep = 10.0f * AccelerationStep;
 }
 
 void ACarPawn::ApplyThrottle(float DeltaTime) {
-	if (IsBraking) {
-		auto CurrentVelocity = CarMesh->GetPhysicsLinearVelocity();
-		CurrentSpeed = CurrentVelocity * BrakeSpeedSlowMultiplier;
-		CarMesh->SetPhysicsLinearVelocity(CurrentSpeed);
-		UpdateSpeedText();
-		Acceleration *= BrakeAccelerationSlowMultiplier;
-		return;
-	}
-
 	Acceleration += Throttle * AccelerationStep;
-
-	if (Throttle == 0.0f) {
-		if (abs(Acceleration) > 0.1f) {
-			Acceleration *= AccelerationSlowMultiplier;
-		} else {
-			Acceleration = 0.0f;
-		}
-		auto CurrentVelocity = CarMesh->GetPhysicsLinearVelocity();
-		CurrentSpeed = CurrentVelocity * SpeedSlowMultiplier;
-		CarMesh->SetPhysicsLinearVelocity(CurrentSpeed);
-		UpdateSpeedText();
-		return;
-	}
-
 	Acceleration = FMath::Clamp(Acceleration, -MaxAcceleration, MaxAcceleration);
 
 	auto ForwardVector = GetActorForwardVector();
 	auto Force = ForwardVector * Acceleration;
-	CurrentSpeed += Force * DeltaTime;
-
 	auto Gravity = GetWorld()->GetGravityZ();
+
+	CurrentSpeed += Force * DeltaTime;
 	CurrentSpeed.Z = Gravity * DeltaTime;
 
 	CarMesh->SetPhysicsLinearVelocity(CurrentSpeed);
@@ -134,8 +112,8 @@ void ACarPawn::ApplySteering(float DeltaTime) {
 	//CarMesh->AddTorqueInDegrees(Rotation);
 }
 
-void ACarPawn::OnActorHit(UPrimitiveComponent *HitComp, AActor *OtherActor, UPrimitiveComponent *OtherComp,
-		FVector NormalImpulse, const FHitResult &Hit) {
+void ACarPawn::OnActorHit(UPrimitiveComponent *HitComp, AActor *OtherActor,
+		UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit) {
 	if (OtherActor->ActorHasTag("Grass")) {
 		AddTimeLost(0.01f);
 	}

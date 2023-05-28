@@ -2,6 +2,10 @@
 
 #include "MainMenuWidget.h"
 #include "../GameModes/RacingGameInstance.h"
+#include "Components/ComboBoxString.h"
+#include "Components/RichTextBlock.h"
+#include "Components/Slider.h"
+#include "Runtime/UMG/Public/UMG.h"
 
 UMainMenuWidget::UMainMenuWidget(const FObjectInitializer &ObjectInitializer) :
 		Super(ObjectInitializer) {
