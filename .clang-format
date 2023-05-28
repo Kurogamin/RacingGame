@@ -60,7 +60,7 @@ AllowShortFunctionsOnASingleLine: None
 # BreakConstructorInitializersBeforeComma: false
 BreakConstructorInitializers: AfterColon
 # BreakStringLiterals: true
-ColumnLimit: 120
+ColumnLimit: 100
 # CommentPragmas:  '^ IWYU pragma:'
 # QualifierAlignment: Leave
 # CompactNamespaces: false

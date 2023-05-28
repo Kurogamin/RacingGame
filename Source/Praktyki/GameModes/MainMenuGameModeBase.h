@@ -7,11 +7,9 @@
 #include "MainMenuGameModeBase.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
-class PRAKTYKI_API AMainMenuGameModeBase : public AGameModeBase
-{
+class PRAKTYKI_API AMainMenuGameModeBase : public AGameModeBase {
 	GENERATED_BODY()
-	
 };

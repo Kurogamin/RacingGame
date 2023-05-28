@@ -29,6 +29,14 @@ void AGameHUD::BeginPlay() {
 			MainMenuWidget->AddToViewport();
 		}
 	}
+
+	//if (RaceFinishedWidgetClass) {
+	//	RaceFinishedWidget = CreateWidget<URaceFinishedWidget>(GetWorld(), RaceFinishedWidgetClass);
+	//
+	//	if (RaceFinishedWidget) {
+	//		RaceFinishedWidget->AddToViewport();
+	//	}
+	//}
 }
 
 void AGameHUD::Tick(float DeltaTime) {

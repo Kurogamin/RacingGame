@@ -3,6 +3,7 @@
 #pragma once
 
 #include "../UI/GameHUD.h"
+#include "../Utility.h"
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include <set>
@@ -19,6 +20,8 @@ struct LapData {
 	}
 };
 
+enum RaceType { Time, Laps };
+
 /**
  *
  */
@@ -27,6 +30,12 @@ class PRAKTYKI_API ARaceGameModeBase : public AGameModeBase {
 	GENERATED_BODY()
 private:
 	AGameHUD *GameHUD = nullptr;
+
+	int NumberOfLaps;
+	int NumberOfSeconds;
+	RaceType CurrentRaceType;
+	float GameStartTime;
+	FTimerHandle EndGameTimer;
 
 	// Checkpoints
 	int NumberOfCheckpoints = 0;
@@ -38,9 +47,6 @@ private:
 	int CurrentLap = 0;
 	float LapStartTime;
 	float CurrentLapTime;
-
-	UPROPERTY(EditAnywhere)
-	int NumberOfLaps = 0;
 
 	// Time Lost
 	float CurrentLapTimeLost = 0.0f;
@@ -61,6 +67,7 @@ public:
 	void AddTimeLost(float AddValue);
 	void AddCheckpoint(int CheckpointNumber);
 	void FinishLap();
+	void EndCurrentRace();
 	int GetNumberOfLaps();
 	int GetNumberOfCheckpoints();
 	bool GetCanFinishLap();

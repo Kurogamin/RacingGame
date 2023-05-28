@@ -37,7 +37,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UMainMenuWidget> MainMenuWidgetClass;
 
+	//UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	//TSubclassOf<URaceFinishedWidget> RaceFinishedWidgetClass;
+
 private:
 	UCarWidget *CarWidget;
 	UMainMenuWidget *MainMenuWidget;
+	//URaceFinishedWidget *RaceFinishedWidget;
 };

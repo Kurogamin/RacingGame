@@ -2,18 +2,34 @@
 
 #include "PraktykiGameModeBase.h"
 #include "../Gameplay/CheckpointTrigger.h"
+#include "RacingGameInstance.h"
 
 void ARaceGameModeBase::BeginPlay() {
 	Super::BeginPlay();
 
 	GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	auto World = GetWorld();
+	URacingGameInstance *GameInstance =
+			Cast<URacingGameInstance>(UGameplayStatics::GetGameInstance(World));
 
 	TArray<AActor *> CheckpointTriggers;
-	UGameplayStatics::GetAllActorsOfClass(World, ACheckpointTrigger::StaticClass(), CheckpointTriggers);
+	UGameplayStatics::GetAllActorsOfClass(
+			World, ACheckpointTrigger::StaticClass(), CheckpointTriggers);
 	NumberOfCheckpoints = CheckpointTriggers.Num();
 
 	LapStartTime = UGameplayStatics::GetRealTimeSeconds(World);
+	GameStartTime = UGameplayStatics::GetRealTimeSeconds(World);
+
+	NumberOfLaps = GameInstance->GetNumberOfLaps();
+
+	CurrentRaceType = NumberOfLaps == 1 ? RaceType::Time : RaceType::Laps;
+
+	if (CurrentRaceType == RaceType::Time) {
+		NumberOfSeconds = GameInstance->GetNumberOfSeconds();
+
+		GetWorldTimerManager().SetTimer(
+				EndGameTimer, this, &ARaceGameModeBase::EndCurrentRace, NumberOfSeconds, false);
+	}
 }
 
 ARaceGameModeBase::ARaceGameModeBase() {
@@ -82,7 +98,14 @@ void ARaceGameModeBase::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
 	float CurrentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+
 	CurrentLapTime = CurrentTime - LapStartTime;
 
 	GameHUD->UpdateCurrentLapTime(CurrentLapTime);
+}
+
+void ARaceGameModeBase::EndCurrentRace() {
+	GameHUD->UpdateCheckpoints();
+	GameHUD->UpdateLaps();
+	UGameplayStatics::OpenLevel(GetWorld(), FName("MainMenuMap"));
 }
