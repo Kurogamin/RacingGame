@@ -124,6 +124,7 @@ void ACarPawn::OnActorHit(UPrimitiveComponent *HitComp, AActor *OtherActor,
 		UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit) {
 	if (OtherActor->ActorHasTag("Grass")) {
 		AddTimeLost(0.01f);
+		Speed *= GrassSpeedMultiplier;
 	}
 }
 
@@ -140,10 +141,11 @@ void ACarPawn::AddTimeLost(float AddValue) {
 }
 
 void ACarPawn::ShiftGear() {
-	int NewGear = 4;
+	int NumberOfGears = GearMaxSpeeds.Num();
+	int NewGear = NumberOfGears - 1;
 	float CurrentSpeedLength = CurrentSpeed.Length();
 
-	for (int i = 0; i < GearMaxSpeeds.Num(); i++) {
+	for (int i = 0; i < NumberOfGears; i++) {
 		if (CurrentSpeedLength < GearMaxSpeeds[i]) {
 			NewGear = i;
 			break;
@@ -154,7 +156,7 @@ void ACarPawn::ShiftGear() {
 	SpeedStep = BaseSpeedStep * GearAccelerationMultipliers[CurrentGear];
 	ShiftingGears = false;
 	GetWorld()->GetTimerManager().ClearTimer(GearShiftTimerHandle);
-	GameHUD->UpdateCurrentGear(CurrentGear);
+	GameHUD->UpdateCurrentGear(CurrentGear + 1);
 }
 
 void ACarPawn::CheckGears() {

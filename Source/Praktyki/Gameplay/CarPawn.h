@@ -23,7 +23,7 @@ private:
 	int CurrentGear = 0;
 
 	UPROPERTY(EditAnywhere)
-	TArray<float> GearMaxSpeeds = { 1300.0f, 2100.0f, 3000.0f, 4100.0f, 5500.0f };
+	TArray<float> GearMaxSpeeds = { 1300.0f, 2100.0f, 3000.0f, 4100.0f, 5500.0f, 6510.0f };
 
 	UPROPERTY(EditAnywhere)
 	TArray<float> GearAccelerationMultipliers = { 1.0f, 0.8f, 0.6f, 0.5f, 0.4f };
@@ -60,6 +60,9 @@ private:
 	float GearShiftSlowMultiplier = 0.1f;
 
 	UPROPERTY(EditAnywhere)
+	float GrassSpeedMultiplier = 0.98f;
+
+	UPROPERTY(EditAnywhere)
 	float BrakeSteerSlowMultiplier = 0.99f;
 
 	UPROPERTY(EditAnywhere)
@@ -72,7 +75,7 @@ private:
 	float SpeedSlowMultiplier = 0.99f;
 
 	UPROPERTY(EditAnywhere)
-	float AccelerationSlowMultiplier = 0.98f;
+	float AccelerationSlowMultiplier = 0.995f;
 
 	UPROPERTY(EditAnywhere)
 	float SteerSlowMultiplier = 0.99f;

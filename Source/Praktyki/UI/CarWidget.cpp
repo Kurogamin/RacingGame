@@ -37,6 +37,10 @@ void UCarWidget::UpdateCurrentSpeedProgressBar(float NewPercent) {
 			BarColor = FLinearColor::Red;
 		} else if (NewPercent > 0.65f) {
 			BarColor = FLinearColor::Yellow;
+		} else if (NewPercent < 0.0f) {
+			CurrentSpeedProgressBar->SetFillColorAndOpacity(FLinearColor::Red);
+			CurrentSpeedProgressBar->SetPercent(1.0f);
+			return;
 		}
 		CurrentSpeedProgressBar->SetFillColorAndOpacity(BarColor);
 	}
