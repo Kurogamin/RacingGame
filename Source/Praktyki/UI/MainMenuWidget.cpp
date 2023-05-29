@@ -51,7 +51,6 @@ void UMainMenuWidget::QuitGame() {
 
 void UMainMenuWidget::OnGameTimeSliderChanged(float Value) {
 	NumberOfSeconds = GameTimeSlider->GetValue();
-	NumberOfSeconds = FMath::RoundToInt(NumberOfSeconds / 10.0f) * 10;
 }
 
 void UMainMenuWidget::OnGameLapsSliderChanged(float Value) {

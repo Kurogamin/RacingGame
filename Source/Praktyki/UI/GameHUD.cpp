@@ -52,6 +52,12 @@ void AGameHUD::UpdateCurrentSpeed(float NewCurrentSpeed) {
 	}
 }
 
+void AGameHUD::UpdateCurrentSpeedProgressBar(float NewPercent) {
+	if (CarWidget) {
+		CarWidget->UpdateCurrentSpeedProgressBar(NewPercent);
+	}
+}
+
 void AGameHUD::UpdateLostTime(float NewLostTime) {
 	if (CarWidget) {
 		CarWidget->UpdateLostTime(NewLostTime);
@@ -82,10 +88,17 @@ void AGameHUD::UpdatePreviousLap(LapData NewPreviousLapData) {
 	}
 }
 
+void AGameHUD::UpdateCurrentGear(int NewCurrentGear) {
+	if (CarWidget) {
+		CarWidget->UpdateCurrentGear(NewCurrentGear);
+	}
+}
+
 bool AGameHUD::UpdateBestLap(LapData NewBestLap) {
 	if (ResultsMenuWidget) {
 		if (NewBestLap.LapTime == 0.0f) {
 			ResultsMenuWidget->UpdateBestLap();
+			return true;
 		}
 		ResultsMenuWidget->UpdateBestLap(NewBestLap);
 		return true;

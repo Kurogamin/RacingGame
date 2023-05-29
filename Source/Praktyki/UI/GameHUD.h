@@ -30,11 +30,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void UpdateCurrentSpeed(float NewCurrentSpeed);
+	void UpdateCurrentSpeedProgressBar(float NewPercent);
 	void UpdateLostTime(float NewLostTime);
 	void UpdateCheckpoints(int CurrentCheckpoints = 0, int MaxCheckpoints = 0);
 	void UpdateLaps(int CurrentLap = 0, int MaxLaps = 0);
 	void UpdateCurrentLapTime(float NewCurrentLapTime);
 	void UpdatePreviousLap(LapData NewPreviousLapData);
+	void UpdateCurrentGear(int NewCurrentGear);
 	bool UpdateBestLap(LapData NewBestLapData);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")

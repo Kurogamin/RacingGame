@@ -23,6 +23,8 @@ void ACarPawn::BeginPlay() {
 	}
 
 	GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+
+	SpeedStep = BaseSpeedStep;
 }
 
 // Called every frame
@@ -32,6 +34,7 @@ void ACarPawn::Tick(float DeltaTime) {
 	if (CarMesh) {
 		ApplyThrottle(DeltaTime);
 		ApplySteering(DeltaTime);
+		CheckGears();
 
 		if (abs(CurrentSpeed.Length()) < 1.0f) {
 			CurrentSpeed = FVector(0.0f);
@@ -61,22 +64,29 @@ void ACarPawn::SetSteering(float SteeringValue) {
 
 void ACarPawn::BrakePressed() {
 	IsBraking = true;
-	//Acceleration = -Acceleration;
-	//AccelerationStep = 0.1f * AccelerationStep;
 }
 
 void ACarPawn::BrakeReleased() {
 	IsBraking = false;
-	//Acceleration = -Acceleration;
-	//AccelerationStep = 10.0f * AccelerationStep;
+	Speed = CurrentSpeed.Length() * BrakeAccelerationSlowMultiplier;
 }
 
 void ACarPawn::ApplyThrottle(float DeltaTime) {
-	Acceleration += Throttle * AccelerationStep;
-	Acceleration = FMath::Clamp(Acceleration, -MaxAcceleration, MaxAcceleration);
+	if (IsBraking) {
+		auto CurrentVelocity = CarMesh->GetPhysicsLinearVelocity();
+		CurrentSpeed = CurrentVelocity * BrakeSpeedSlowMultiplier;
+		CarMesh->SetPhysicsLinearVelocity(CurrentSpeed);
+		return;
+	}
 
-	auto ForwardVector = GetActorForwardVector();
-	auto Force = ForwardVector * Acceleration;
+	float LocalAccelerationStep = SpeedStep;
+	if (ShiftingGears) {
+		LocalAccelerationStep *= GearShiftSlowMultiplier;
+	}
+	Speed += Throttle * LocalAccelerationStep;
+	Speed = FMath::Clamp(Speed, -MaxSpeed * 10.0f, MaxSpeed * 10.0f);
+
+	auto Force = GetActorForwardVector() * Speed;
 	auto Gravity = GetWorld()->GetGravityZ();
 
 	CurrentSpeed += Force * DeltaTime;
@@ -108,8 +118,6 @@ void ACarPawn::ApplySteering(float DeltaTime) {
 	Rotation = IsBraking ? Rotation * DriftMultiplier : Rotation;
 
 	CarMesh->SetPhysicsAngularVelocityInDegrees(Rotation);
-
-	//CarMesh->AddTorqueInDegrees(Rotation);
 }
 
 void ACarPawn::OnActorHit(UPrimitiveComponent *HitComp, AActor *OtherActor,
@@ -121,12 +129,61 @@ void ACarPawn::OnActorHit(UPrimitiveComponent *HitComp, AActor *OtherActor,
 
 void ACarPawn::UpdateSpeedText() {
 	if (GameHUD) {
-		auto Speed = (int)(CurrentSpeed.Length() * 0.1f);
-		GameHUD->UpdateCurrentSpeed((float)Speed);
+		float CurrentSpeedLength = CurrentSpeed.Length();
+		GameHUD->UpdateCurrentSpeed(int(CurrentSpeedLength * 0.1f));
 	}
 }
 
 void ACarPawn::AddTimeLost(float AddValue) {
 	ARaceGameModeBase *GameMode = Cast<ARaceGameModeBase>(GetWorld()->GetAuthGameMode());
 	GameMode->AddTimeLost(AddValue);
+}
+
+void ACarPawn::ShiftGear() {
+	int NewGear = 4;
+	float CurrentSpeedLength = CurrentSpeed.Length();
+
+	for (int i = 0; i < GearMaxSpeeds.Num(); i++) {
+		if (CurrentSpeedLength < GearMaxSpeeds[i]) {
+			NewGear = i;
+			break;
+		}
+	}
+
+	CurrentGear = NewGear;
+	SpeedStep = BaseSpeedStep * GearAccelerationMultipliers[CurrentGear];
+	ShiftingGears = false;
+	GetWorld()->GetTimerManager().ClearTimer(GearShiftTimerHandle);
+	GameHUD->UpdateCurrentGear(CurrentGear);
+}
+
+void ACarPawn::CheckGears() {
+	float GearSpeedRange = GearMaxSpeeds[0];
+	float CurrentGearStart = 0.0f;
+	if (CurrentGear > 0) {
+		GearSpeedRange = GearMaxSpeeds[CurrentGear] - GearMaxSpeeds[CurrentGear - 1];
+		CurrentGearStart = GearMaxSpeeds[CurrentGear - 1];
+	}
+	float SpeedPercent = (CurrentSpeed.Length() - CurrentGearStart) / GearSpeedRange;
+	GameHUD->UpdateCurrentSpeedProgressBar(SpeedPercent);
+
+	if (ShiftingGears) {
+		return;
+	}
+
+	float CurrentSpeedLength = CurrentSpeed.Length();
+
+	float GearMaxSpeed = GearMaxSpeeds[CurrentGear];
+	float GearMinSpeed = CurrentGear > 0 ? GearMaxSpeeds[CurrentGear - 1] : 0.0f;
+
+	if (CurrentSpeedLength < GearMaxSpeed && CurrentSpeedLength >= GearMinSpeed) {
+		return;
+	}
+
+	ShiftingGears = true;
+	auto World = GetWorld();
+	if (!World->GetTimerManager().IsTimerActive(GearShiftTimerHandle)) {
+		World->GetTimerManager().SetTimer(
+				GearShiftTimerHandle, this, &ACarPawn::ShiftGear, TimeToShift, false);
+	}
 }

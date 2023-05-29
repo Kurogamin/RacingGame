@@ -2,6 +2,7 @@
 
 #include "CarWidget.h"
 #include "../Gameplay/LapData.h"
+#include "Components/ProgressBar.h"
 #include "Components/RichTextBlock.h"
 #include "Runtime/UMG/Public/UMG.h"
 
@@ -25,6 +26,19 @@ void UCarWidget::UpdateCurrentSpeed(float NewCurrentSpeed) {
 		FString CurrentSpeedString = GetStringWithTag("Green", NewCurrentSpeed);
 		CurrentSpeedText->SetText(
 				FText::FromString(FString("Current Speed: ") + CurrentSpeedString));
+	}
+}
+
+void UCarWidget::UpdateCurrentSpeedProgressBar(float NewPercent) {
+	if (CurrentSpeedProgressBar) {
+		CurrentSpeedProgressBar->SetPercent(NewPercent);
+		FLinearColor BarColor = FLinearColor::Green;
+		if (NewPercent > 0.95f) {
+			BarColor = FLinearColor::Red;
+		} else if (NewPercent > 0.65f) {
+			BarColor = FLinearColor::Yellow;
+		}
+		CurrentSpeedProgressBar->SetFillColorAndOpacity(BarColor);
 	}
 }
 
@@ -80,5 +94,12 @@ void UCarWidget::UpdatePreviousLap(LapData NewPreviousLapData) {
 				FString("Previous Lap Time: ") + StringPreviousLapTime + FString(" s")));
 		PreviousLapLostTimeText->SetText(FText::FromString(
 				FString("Previous Lap Lost Time: ") + StringPreviousLapLostTime + FString(" s")));
+	}
+}
+
+void UCarWidget::UpdateCurrentGear(int NewCurrentGear) {
+	if (CurrentGearText) {
+		CurrentGearText->SetText(
+				FText::FromString(FString("Gear: ") + FString::FromInt(NewCurrentGear)));
 	}
 }
