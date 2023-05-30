@@ -9,17 +9,22 @@
 
 class AGameHUD;
 class USpringArmComponent;
+class UCameraComponent;
+class UStaticMeshComponent;
 
 UCLASS()
 class PRAKTYKI_API ACarPawn : public APawn {
 	GENERATED_BODY()
 
 private:
+	UPROPERTY(EditDefaultsOnly, Category = "Pointers");
 	USkeletalMeshComponent *CarMesh = nullptr;
-	FVector CurrentSpeed{};
-	AGameHUD *GameHUD = nullptr;
+	UStaticMeshComponent *SteeringWheelMesh = nullptr;
 	USpringArmComponent *SpringArm = nullptr;
+	UCameraComponent *Camera = nullptr;
+	AGameHUD *GameHUD = nullptr;
 
+	FVector CurrentSpeed{};
 	// GEARS
 
 	int CurrentGear = 0;
@@ -86,6 +91,25 @@ private:
 	void AddTimeLost(float AddValue);
 	void CheckGears();
 	void ShiftGear();
+	void SwitchCamera(int CameraIndex);
+	void RotateWheels();
+	void RotateSteeringWheel();
+
+	template <int Index> void SwitchCamera() {
+		SwitchCamera(Index);
+	}
+
+	template <typename T>
+	typename std::enable_if<std::is_base_of<UObject, T>::value, bool>::type GetComponentByTag(
+			T *&Component, FName Tag) {
+		auto Components = GetComponentsByTag(T::StaticClass(), Tag);
+
+		if (Components.Num() > 0) {
+			Component = Cast<T>(Components[0]);
+			return true;
+		}
+		return false;
+	}
 
 protected:
 	// Called when the game starts or when spawned

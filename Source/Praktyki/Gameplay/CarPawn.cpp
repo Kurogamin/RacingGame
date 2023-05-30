@@ -3,6 +3,7 @@
 #include "CarPawn.h"
 #include "../GameModes/PraktykiGameModeBase.h"
 #include "../UI/GameHUD.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
@@ -16,18 +17,12 @@ ACarPawn::ACarPawn() {
 void ACarPawn::BeginPlay() {
 	Super::BeginPlay();
 
-	auto Components = GetComponentsByTag(USkeletalMeshComponent::StaticClass(), FName("CarMesh"));
+	GetComponentByTag(CarMesh, "CarMesh");
+	CarMesh->OnComponentHit.AddDynamic(this, &ACarPawn::OnActorHit);
 
-	if (Components.Num() > 0) {
-		CarMesh = Cast<USkeletalMeshComponent>(Components[0]);
-		CarMesh->OnComponentHit.AddDynamic(this, &ACarPawn::OnActorHit);
-	}
-
-	Components = GetComponentsByTag(USpringArmComponent::StaticClass(), FName("SpringArm"));
-
-	if (Components.Num() > 0) {
-		SpringArm = Cast<USpringArmComponent>(Components[0]);
-	}
+	GetComponentByTag(SpringArm, "SpringArm");
+	GetComponentByTag(Camera, "Camera");
+	GetComponentByTag(SteeringWheelMesh, "SteeringWheel");
 
 	GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
@@ -59,6 +54,10 @@ void ACarPawn::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) 
 
 	PlayerInputComponent->BindAction("Brake", IE_Pressed, this, &ACarPawn::BrakePressed);
 	PlayerInputComponent->BindAction("Brake", IE_Released, this, &ACarPawn::BrakeReleased);
+
+	PlayerInputComponent->BindAction("Camera1", IE_Pressed, this, &ACarPawn::SwitchCamera<1>);
+	PlayerInputComponent->BindAction("Camera2", IE_Pressed, this, &ACarPawn::SwitchCamera<2>);
+	PlayerInputComponent->BindAction("Camera3", IE_Pressed, this, &ACarPawn::SwitchCamera<3>);
 }
 
 void ACarPawn::SetThrottle(float ThrottleValue) {
@@ -193,5 +192,35 @@ void ACarPawn::CheckGears() {
 	if (!World->GetTimerManager().IsTimerActive(GearShiftTimerHandle)) {
 		World->GetTimerManager().SetTimer(
 				GearShiftTimerHandle, this, &ACarPawn::ShiftGear, TimeToShift, false);
+	}
+}
+
+void ACarPawn::RotateSteeringWheel() {
+}
+
+void ACarPawn::RotateWheels() {
+}
+
+void ACarPawn::SwitchCamera(int CameraIndex) {
+	if (CameraIndex < 1 || CameraIndex > 3) {
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Switching camera to %d"), CameraIndex);
+
+	Camera->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+
+	switch (CameraIndex) {
+		case 1:
+			Camera->AttachToComponent(SpringArm, FAttachmentTransformRules::KeepRelativeTransform);
+			break;
+		case 2:
+			Camera->AttachToComponent(CarMesh, FAttachmentTransformRules::KeepRelativeTransform,
+					"HoodGameplayCamera");
+			break;
+		case 3:
+			Camera->AttachToComponent(CarMesh, FAttachmentTransformRules::KeepRelativeTransform,
+					"CarInteriorGameplayCamera");
+			break;
 	}
 }
