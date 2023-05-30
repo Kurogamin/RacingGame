@@ -3,6 +3,7 @@
 #include "CarPawn.h"
 #include "../GameModes/PraktykiGameModeBase.h"
 #include "../UI/GameHUD.h"
+#include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
 ACarPawn::ACarPawn() {
@@ -20,6 +21,12 @@ void ACarPawn::BeginPlay() {
 	if (Components.Num() > 0) {
 		CarMesh = Cast<USkeletalMeshComponent>(Components[0]);
 		CarMesh->OnComponentHit.AddDynamic(this, &ACarPawn::OnActorHit);
+	}
+
+	Components = GetComponentsByTag(USpringArmComponent::StaticClass(), FName("SpringArm"));
+
+	if (Components.Num() > 0) {
+		SpringArm = Cast<USpringArmComponent>(Components[0]);
 	}
 
 	GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
@@ -131,7 +138,16 @@ void ACarPawn::OnActorHit(UPrimitiveComponent *HitComp, AActor *OtherActor,
 void ACarPawn::UpdateSpeedText() {
 	if (GameHUD) {
 		float CurrentSpeedLength = CurrentSpeed.Length();
-		GameHUD->UpdateCurrentSpeed(int(CurrentSpeedLength * 0.1f));
+		float GearSpeedRange = GearMaxSpeeds[0];
+		float CurrentGearStart = 0.0f;
+
+		if (CurrentGear > 0) {
+			GearSpeedRange = GearMaxSpeeds[CurrentGear] - GearMaxSpeeds[CurrentGear - 1];
+			CurrentGearStart = GearMaxSpeeds[CurrentGear - 1];
+		}
+		float SpeedPercent = (CurrentSpeed.Length() - CurrentGearStart) / GearSpeedRange;
+
+		GameHUD->UpdateCurrentSpeed(int(CurrentSpeedLength * 0.1f), CurrentGear + 1, SpeedPercent);
 	}
 }
 
@@ -153,22 +169,12 @@ void ACarPawn::ShiftGear() {
 	}
 
 	CurrentGear = NewGear;
-	SpeedStep = BaseSpeedStep * GearAccelerationMultipliers[CurrentGear];
 	ShiftingGears = false;
+	SpeedStep = BaseSpeedStep * GearAccelerationMultipliers[CurrentGear];
 	GetWorld()->GetTimerManager().ClearTimer(GearShiftTimerHandle);
-	GameHUD->UpdateCurrentGear(CurrentGear + 1);
 }
 
 void ACarPawn::CheckGears() {
-	float GearSpeedRange = GearMaxSpeeds[0];
-	float CurrentGearStart = 0.0f;
-	if (CurrentGear > 0) {
-		GearSpeedRange = GearMaxSpeeds[CurrentGear] - GearMaxSpeeds[CurrentGear - 1];
-		CurrentGearStart = GearMaxSpeeds[CurrentGear - 1];
-	}
-	float SpeedPercent = (CurrentSpeed.Length() - CurrentGearStart) / GearSpeedRange;
-	GameHUD->UpdateCurrentSpeedProgressBar(SpeedPercent);
-
 	if (ShiftingGears) {
 		return;
 	}

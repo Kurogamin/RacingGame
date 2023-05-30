@@ -21,37 +21,34 @@ void UCarWidget::NativeConstruct() {
 	Super::NativeConstruct();
 }
 
-void UCarWidget::UpdateCurrentSpeed(float NewCurrentSpeed) {
-	if (CurrentSpeedText) {
-		FString CurrentSpeedString = GetStringWithTag("Green", NewCurrentSpeed);
-		CurrentSpeedText->SetText(
-				FText::FromString(FString("Current Speed: ") + CurrentSpeedString));
-	}
-}
+void UCarWidget::UpdateCurrentSpeed(float NewCurrentSpeed, int NewCurrentGear, float NewPercent) {
+	if (CurrentSpeedProgressBar && CurrentSpeedText && CurrentGearText) {
+		FString CurrentGearString;
 
-void UCarWidget::UpdateCurrentSpeedProgressBar(float NewPercent) {
-	if (CurrentSpeedProgressBar) {
-		CurrentSpeedProgressBar->SetPercent(NewPercent);
-		FLinearColor BarColor = FLinearColor::Green;
-		if (NewPercent > 0.95f) {
-			BarColor = FLinearColor::Red;
-		} else if (NewPercent > 0.65f) {
-			BarColor = FLinearColor::Yellow;
-		} else if (NewPercent < 0.0f) {
-			CurrentSpeedProgressBar->SetFillColorAndOpacity(FLinearColor::Red);
+		if (NewPercent < 0.0f) {
+			FLinearColor RedColor = FLinearColor::Red;
+			CurrentGearText->SetText(FText::FromString(FString::FromInt(NewCurrentGear)));
+			CurrentSpeedProgressBar->SetFillColorAndOpacity(RedColor);
 			CurrentSpeedProgressBar->SetPercent(1.0f);
+			CurrentGearText->SetColorAndOpacity(RedColor);
 			return;
 		}
+
+		FLinearColor BarColor = FLinearColor::Green;
+		FLinearColor GearColor = FLinearColor::White;
+		if (NewPercent > 0.95f) {
+			BarColor = FLinearColor::Red;
+			GearColor = FLinearColor::Red;
+		} else if (NewPercent > 0.65f) {
+			BarColor = FLinearColor::Yellow;
+			GearColor = FLinearColor::Yellow;
+		}
 		CurrentSpeedProgressBar->SetFillColorAndOpacity(BarColor);
-	}
-}
+		CurrentSpeedProgressBar->SetPercent(NewPercent);
 
-void UCarWidget::UpdateLostTime(float NewLostTime) {
-	if (CurrentTimeLostText) {
-		FString StringLostTime = LapData::FloatToRoundedString(NewLostTime);
-
-		CurrentTimeLostText->SetText(
-				FText::FromString(FString("Time Lost: ") + StringLostTime + FString(" s")));
+		CurrentSpeedText->SetText(FText::FromString(FString::FromInt(NewCurrentSpeed)));
+		CurrentGearText->SetText(FText::FromString(FString::FromInt(NewCurrentGear)));
+		CurrentGearText->SetColorAndOpacity(GearColor);
 	}
 }
 
@@ -79,31 +76,25 @@ void UCarWidget::UpdateLaps(int CurrentLap, int MaxLaps) {
 	}
 }
 
-void UCarWidget::UpdateCurrentLapTime(float NewCurrentLapTime) {
+void UCarWidget::UpdateCurrentLapTime(float NewLapTime, float NewLapLostTime) {
 	if (CurrentLapTimeText) {
-		FString StringCurrentLapTime = LapData::FloatToRoundedString(NewCurrentLapTime);
+		FString StringCurrentLapTime = LapData::FloatToRoundedString(NewLapTime);
+		FString StringCurrentLapLostTime = LapData::FloatToRoundedString(NewLapLostTime);
 
-		CurrentLapTimeText->SetText(FText::FromString(
-				FString("Current Lap Time: ") + StringCurrentLapTime + FString(" s")));
+		CurrentLapTimeText->SetText(FText::FromString(StringCurrentLapTime + FString("<Red>") +
+				StringCurrentLapLostTime + FString("</>")));
 	}
 }
 
-void UCarWidget::UpdatePreviousLap(LapData NewPreviousLapData) {
-	if (PreviousLapTimeText && PreviousLapLostTimeText) {
-		FString StringPreviousLapTime = LapData::FloatToRoundedString(NewPreviousLapData.LapTime);
-		FString StringPreviousLapLostTime =
-				LapData::FloatToRoundedString(NewPreviousLapData.LapTimeLost);
-
-		PreviousLapTimeText->SetText(FText::FromString(
-				FString("Previous Lap Time: ") + StringPreviousLapTime + FString(" s")));
-		PreviousLapLostTimeText->SetText(FText::FromString(
-				FString("Previous Lap Lost Time: ") + StringPreviousLapLostTime + FString(" s")));
+void UCarWidget::UpdateBestLapTime(LapData NewBestLapData) {
+	if (BestLapTimeText) {
+		BestLapTimeText->SetText(FText::FromString(NewBestLapData.ToRichString()));
 	}
 }
 
-void UCarWidget::UpdateCurrentGear(int NewCurrentGear) {
-	if (CurrentGearText) {
-		CurrentGearText->SetText(
-				FText::FromString(FString("Gear: ") + FString::FromInt(NewCurrentGear)));
+void UCarWidget::UpdateCurrentCheckpoint(float NewCurrentCheckpoint) {
+	if (CurrentCheckpointText) {
+		FString StringCurrentCheckpoint = LapData::FloatToRoundedString(NewCurrentCheckpoint);
+		CurrentCheckpointText->SetText(FText::FromString(StringCurrentCheckpoint));
 	}
 }

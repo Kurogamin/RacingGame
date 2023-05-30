@@ -19,6 +19,7 @@ public:
 
 	LapData();
 	LapData(float LapTime, float LapTimeLost);
+	LapData(float LapTime, float LapTimeLost, TArray<float> CheckpointTimes);
 
 	FString ToRichString() const;
 	bool operator>(const LapData &other) const;

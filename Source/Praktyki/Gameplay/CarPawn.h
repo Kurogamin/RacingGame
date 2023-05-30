@@ -8,6 +8,7 @@
 #include "CarPawn.generated.h"
 
 class AGameHUD;
+class USpringArmComponent;
 
 UCLASS()
 class PRAKTYKI_API ACarPawn : public APawn {
@@ -17,6 +18,7 @@ private:
 	USkeletalMeshComponent *CarMesh = nullptr;
 	FVector CurrentSpeed{};
 	AGameHUD *GameHUD = nullptr;
+	USpringArmComponent *SpringArm = nullptr;
 
 	// GEARS
 

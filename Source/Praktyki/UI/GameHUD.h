@@ -29,15 +29,12 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	void UpdateCurrentSpeed(float NewCurrentSpeed);
-	void UpdateCurrentSpeedProgressBar(float NewPercent);
-	void UpdateLostTime(float NewLostTime);
+	void UpdateCurrentSpeed(float NewCurrentSpeed, float NewCurrentGear, float NewCurrentPercent);
 	void UpdateCheckpoints(int CurrentCheckpoints = 0, int MaxCheckpoints = 0);
 	void UpdateLaps(int CurrentLap = 0, int MaxLaps = 0);
-	void UpdateCurrentLapTime(float NewCurrentLapTime);
-	void UpdatePreviousLap(LapData NewPreviousLapData);
-	void UpdateCurrentGear(int NewCurrentGear);
+	void UpdateCurrentLapTime(float NewLapTime, float NewLapLostTime);
 	bool UpdateBestLap(LapData NewBestLapData);
+	void UpdateCurrentCheckpoint(float NewCurrentCheckpoint);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UCarWidget> CarWidgetClass;

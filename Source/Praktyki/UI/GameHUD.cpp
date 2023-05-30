@@ -46,21 +46,9 @@ void AGameHUD::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 }
 
-void AGameHUD::UpdateCurrentSpeed(float NewCurrentSpeed) {
+void AGameHUD::UpdateCurrentSpeed(float NewCurrentSpeed, float NewCurrentGear, float NewPercent) {
 	if (CarWidget) {
-		CarWidget->UpdateCurrentSpeed(NewCurrentSpeed);
-	}
-}
-
-void AGameHUD::UpdateCurrentSpeedProgressBar(float NewPercent) {
-	if (CarWidget) {
-		CarWidget->UpdateCurrentSpeedProgressBar(NewPercent);
-	}
-}
-
-void AGameHUD::UpdateLostTime(float NewLostTime) {
-	if (CarWidget) {
-		CarWidget->UpdateLostTime(NewLostTime);
+		CarWidget->UpdateCurrentSpeed(NewCurrentSpeed, NewCurrentGear, NewPercent);
 	}
 }
 
@@ -76,21 +64,9 @@ void AGameHUD::UpdateLaps(int CurrentLap, int MaxLaps) {
 	}
 }
 
-void AGameHUD::UpdateCurrentLapTime(float NewCurrentLapTime) {
+void AGameHUD::UpdateCurrentLapTime(float NewLapTime, float NewLapLostTime) {
 	if (CarWidget) {
-		CarWidget->UpdateCurrentLapTime(NewCurrentLapTime);
-	}
-}
-
-void AGameHUD::UpdatePreviousLap(LapData NewPreviousLapData) {
-	if (CarWidget) {
-		CarWidget->UpdatePreviousLap(NewPreviousLapData);
-	}
-}
-
-void AGameHUD::UpdateCurrentGear(int NewCurrentGear) {
-	if (CarWidget) {
-		CarWidget->UpdateCurrentGear(NewCurrentGear);
+		CarWidget->UpdateCurrentLapTime(NewLapTime, NewLapLostTime);
 	}
 }
 
@@ -105,6 +81,12 @@ bool AGameHUD::UpdateBestLap(LapData NewBestLap) {
 	}
 
 	return false;
+}
+
+void AGameHUD::UpdateCurrentCheckpoint(float NewCurrentCheckpoint) {
+	if (CarWidget) {
+		CarWidget->UpdateCurrentCheckpoint(NewCurrentCheckpoint);
+	}
 }
 
 void AGameHUD::DrawHUD() {

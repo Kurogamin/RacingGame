@@ -10,6 +10,7 @@
 #include "PraktykiGameModeBase.generated.h"
 
 class AGameHUD;
+class ACarPawn;
 enum RaceType;
 
 /**
@@ -20,6 +21,7 @@ class PRAKTYKI_API ARaceGameModeBase : public AGameModeBase {
 	GENERATED_BODY()
 private:
 	AGameHUD *GameHUD = nullptr;
+	ACarPawn *CarPawn = nullptr;
 
 	int NumberOfLaps;
 	int NumberOfSeconds;
@@ -29,12 +31,13 @@ private:
 
 	// Checkpoints
 	int NumberOfCheckpoints = 0;
-
 	TSet<int> CheckpointsReached;
-	bool CanFinishLap = false;
+	TArray<float> BestCheckpointTimes;
+	TArray<float> CurrentCheckpointTimes;
 
 	// Laps
 	int CurrentLap = 0;
+	bool CanFinishLap = false;
 	float LapStartTime;
 	float CurrentLapTime;
 

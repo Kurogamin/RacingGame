@@ -25,6 +25,12 @@ LapData::LapData(float LapTime, float LapTimeLost) {
 	this->LapTimeLost = LapTimeLost;
 }
 
+LapData::LapData(float LapTime, float LapTimeLost, TArray<float> CheckpointTimes) {
+	this->LapTime = LapTime;
+	this->LapTimeLost = LapTimeLost;
+	this->CheckpointTimes = CheckpointTimes;
+}
+
 FString LapData::ToRichString() const {
 	FString LapTimeString = FloatToRoundedString(LapTime, 3);
 	FString LapTimeLostString = FloatToRoundedString(LapTimeLost, 3);
@@ -32,5 +38,8 @@ FString LapData::ToRichString() const {
 }
 
 bool LapData::operator>(const LapData &other) const {
+	if (other.LapTime == 0.0f) {
+		return true;
+	}
 	return LapTime + LapTimeLost < other.LapTime + other.LapTimeLost;
 }

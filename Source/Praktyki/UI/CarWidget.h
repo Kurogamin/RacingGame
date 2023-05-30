@@ -24,20 +24,18 @@ public:
 
 	virtual void NativeConstruct() override;
 
-	void UpdateCurrentSpeed(float NewCurrentSpeed);
-	void UpdateCurrentSpeedProgressBar(float NewPercent);
-	void UpdateLostTime(float AddValue);
+	void UpdateCurrentSpeed(float NewCurrentSpeed, int NewCurrentGear, float NewPercent);
 	void UpdateCheckpoints(int CurrentCheckpoints, int MaxCheckpoints);
 	void UpdateLaps(int CurrentLap = 0, int MaxLaps = 0);
-	void UpdateCurrentLapTime(float NewCurrentLapTime);
-	void UpdatePreviousLap(LapData NewPreviousLapData);
-	void UpdateCurrentGear(int NewCurrentGear);
+	void UpdateCurrentLapTime(float NewLapTime, float NewLapLostTime);
+	void UpdateBestLapTime(LapData NewBestLapData);
+	void UpdateCurrentCheckpoint(float NewCurrentCheckpoint);
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
-	class URichTextBlock *CurrentSpeedText;
+	class UTextBlock *CurrentSpeedText;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
-	class UTextBlock *CurrentTimeLostText;
+	class UTextBlock *CurrentGearText;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UTextBlock *CheckpointsText;
@@ -46,16 +44,13 @@ public:
 	class UTextBlock *LapsText;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
-	class UTextBlock *CurrentLapTimeText;
+	class UTextBlock *CurrentCheckpointText;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
-	class UTextBlock *PreviousLapTimeText;
+	class URichTextBlock *CurrentLapTimeText;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
-	class UTextBlock *PreviousLapLostTimeText;
-
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
-	class UTextBlock *CurrentGearText;
+	class URichTextBlock *BestLapTimeText;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UProgressBar *CurrentSpeedProgressBar;

@@ -19,6 +19,8 @@ void ARaceGameModeBase::BeginPlay() {
 	UGameplayStatics::GetAllActorsOfClass(
 			World, ACheckpointTrigger::StaticClass(), CheckpointTriggers);
 	NumberOfCheckpoints = CheckpointTriggers.Num();
+	BestCheckpointTimes.Init(1000.0f, NumberOfCheckpoints);
+	CurrentCheckpointTimes.Init(0.0f, NumberOfCheckpoints);
 
 	LapStartTime = UGameplayStatics::GetRealTimeSeconds(World);
 	GameStartTime = UGameplayStatics::GetRealTimeSeconds(World);
@@ -37,14 +39,21 @@ void ARaceGameModeBase::BeginPlay() {
 
 ARaceGameModeBase::ARaceGameModeBase() {
 	PrimaryActorTick.bCanEverTick = true;
-
-	BestLapData = LapData{};
 }
 
 void ARaceGameModeBase::AddCheckpoint(int CheckpointNumber) {
+	if (CheckpointsReached.Contains(CheckpointNumber)) {
+		return;
+	}
+	if (BestCheckpointTimes[CheckpointNumber] > CurrentLapTime) {
+		BestCheckpointTimes[CheckpointNumber] = CurrentLapTime;
+	}
+	CurrentCheckpointTimes[CheckpointNumber] = CurrentLapTime;
 	CheckpointsReached.Add(CheckpointNumber);
 	int CheckpointsReachedNumber = CheckpointsReached.Num();
+
 	GameHUD->UpdateCheckpoints(CheckpointsReachedNumber, NumberOfCheckpoints);
+	GameHUD->UpdateCurrentCheckpoint(CurrentLapTime);
 
 	if (CheckpointsReachedNumber == NumberOfCheckpoints) {
 		CanFinishLap = true;
@@ -82,23 +91,20 @@ bool ARaceGameModeBase::GetCanFinishLap() {
 }
 
 void ARaceGameModeBase::AddLapData() {
-	LapData CurrentLapData = LapData(CurrentLapTime, CurrentLapTimeLost);
+	LapData CurrentLapData = LapData(CurrentLapTime, CurrentLapTimeLost, CurrentCheckpointTimes);
 	if (CurrentLapData > BestLapData) {
 		BestLapData = CurrentLapData;
+		GameHUD->UpdateBestLap(BestLapData);
 	}
 	LapTimes.Add(CurrentLapData);
 
 	CurrentLapTime = 0.0f;
 	CurrentLapTimeLost = 0.0f;
 	LapStartTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
-
-	GameHUD->UpdatePreviousLap(CurrentLapData);
 }
 
 void ARaceGameModeBase::AddTimeLost(float AddValue) {
 	CurrentLapTimeLost += AddValue;
-
-	GameHUD->UpdateLostTime(CurrentLapTimeLost);
 }
 
 void ARaceGameModeBase::Tick(float DeltaTime) {
@@ -108,7 +114,7 @@ void ARaceGameModeBase::Tick(float DeltaTime) {
 
 	CurrentLapTime = CurrentTime - LapStartTime;
 
-	GameHUD->UpdateCurrentLapTime(CurrentLapTime);
+	GameHUD->UpdateCurrentLapTime(CurrentLapTime, CurrentLapTimeLost);
 }
 
 void ARaceGameModeBase::EndCurrentRace() {
