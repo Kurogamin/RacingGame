@@ -35,6 +35,7 @@ public:
 	void UpdateCurrentLapTime(float NewLapTime, float NewLapLostTime);
 	bool UpdateBestLap(LapData NewBestLapData);
 	void UpdateCurrentCheckpoint(float NewCurrentCheckpoint);
+	void UpdateRemainingTime(int NewRemainingTime);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UCarWidget> CarWidgetClass;

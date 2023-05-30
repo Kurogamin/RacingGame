@@ -27,6 +27,7 @@ void UCarWidget::UpdateCurrentSpeed(float NewCurrentSpeed, int NewCurrentGear, f
 
 		if (NewPercent < 0.0f) {
 			FLinearColor RedColor = FLinearColor::Red;
+			CurrentSpeedText->SetText(FText::FromString(FString::FromInt(NewCurrentSpeed)));
 			CurrentGearText->SetText(FText::FromString(FString::FromInt(NewCurrentGear)));
 			CurrentSpeedProgressBar->SetFillColorAndOpacity(RedColor);
 			CurrentSpeedProgressBar->SetPercent(1.0f);
@@ -96,5 +97,15 @@ void UCarWidget::UpdateCurrentCheckpoint(float NewCurrentCheckpoint) {
 	if (CurrentCheckpointText) {
 		FString StringCurrentCheckpoint = LapData::FloatToRoundedString(NewCurrentCheckpoint);
 		CurrentCheckpointText->SetText(FText::FromString(StringCurrentCheckpoint));
+	}
+}
+
+void UCarWidget::UpdateRemainingTime(int NewRemainingTime) {
+	if (RemainingTimeText) {
+		if (NewRemainingTime >= 0) {
+			RemainingTimeText->SetText(FText::FromString(FString::FromInt(NewRemainingTime + 1)));
+		} else {
+			RemainingTimeText->SetText(FText::FromString(FString("")));
+		}
 	}
 }

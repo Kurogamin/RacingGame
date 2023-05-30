@@ -25,8 +25,11 @@ private:
 
 	int NumberOfLaps;
 	int NumberOfSeconds;
-	RaceType CurrentRaceType;
 	float GameStartTime;
+	float StartDelay = 3.0f;
+	bool GameStarted = false;
+	RaceType CurrentRaceType;
+	FTimerHandle StartGameTimer;
 	FTimerHandle EndGameTimer;
 
 	// Checkpoints
@@ -60,6 +63,7 @@ public:
 
 	void AddTimeLost(float AddValue);
 	void AddCheckpoint(int CheckpointNumber);
+	void StartRace();
 	void FinishLap();
 	void EndCurrentRace();
 	int GetNumberOfLaps();

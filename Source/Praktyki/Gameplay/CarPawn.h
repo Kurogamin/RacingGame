@@ -17,9 +17,13 @@ class PRAKTYKI_API ACarPawn : public APawn {
 	GENERATED_BODY()
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "Pointers");
+	UPROPERTY(EditDefaultsOnly, Category = "Car|Pointers");
 	USkeletalMeshComponent *CarMesh = nullptr;
 	UStaticMeshComponent *SteeringWheelMesh = nullptr;
+	UStaticMeshComponent *FrontLeftWheelMesh = nullptr;
+	UStaticMeshComponent *FrontLeftWheelMeshTurn = nullptr;
+	UStaticMeshComponent *FrontRightWheelMeshTurn = nullptr;
+	UStaticMeshComponent *FrontRightWheelMesh = nullptr;
 	USpringArmComponent *SpringArm = nullptr;
 	UCameraComponent *Camera = nullptr;
 	AGameHUD *GameHUD = nullptr;
@@ -29,10 +33,10 @@ private:
 
 	int CurrentGear = 0;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Gears")
 	TArray<float> GearMaxSpeeds = { 1300.0f, 2100.0f, 3000.0f, 4100.0f, 5500.0f, 6510.0f };
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Gears")
 	TArray<float> GearAccelerationMultipliers = { 1.0f, 0.8f, 0.6f, 0.5f, 0.4f };
 
 	UPROPERTY(EditAnywhere)
@@ -49,43 +53,49 @@ private:
 	float Speed = 0.0f;
 	float CurrentSteering = 0.0f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Speed")
 	float BaseSpeedStep = 10.0f;
 
 	float SpeedStep;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Speed")
 	float MaxSpeed = 650.0f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Steering")
 	float MaxSteeringAngle = 40.0f; // ?
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Steering")
 	float DriftMultiplier = 2.0f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Gears")
 	float GearShiftSlowMultiplier = 0.1f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Speed")
 	float GrassSpeedMultiplier = 0.98f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Steering")
 	float BrakeSteerSlowMultiplier = 0.99f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Speed")
 	float BrakeSpeedSlowMultiplier = 0.999f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Speed")
 	float BrakeAccelerationSlowMultiplier = 0.99f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Speed")
 	float SpeedSlowMultiplier = 0.99f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Speed")
 	float AccelerationSlowMultiplier = 0.995f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Car|Speed")
+	float WheelRotationLerpStep = 0.1f;
+
+	UPROPERTY(EditAnywhere, Category = "Car|Steering")
 	float SteerSlowMultiplier = 0.99f;
+
+	UPROPERTY(EditAnywhere, Category = "Car|Steering")
+	float SteeringRotationLerpStep = 0.1f;
 
 	void UpdateSpeedText();
 	void AddTimeLost(float AddValue);
@@ -135,4 +145,6 @@ public:
 
 	void BrakePressed();
 	void BrakeReleased();
+
+	bool CanTick = false;
 };

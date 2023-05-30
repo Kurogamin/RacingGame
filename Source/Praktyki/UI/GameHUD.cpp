@@ -89,6 +89,12 @@ void AGameHUD::UpdateCurrentCheckpoint(float NewCurrentCheckpoint) {
 	}
 }
 
+void AGameHUD::UpdateRemainingTime(int NewRemainingTime) {
+	if (CarWidget) {
+		CarWidget->UpdateRemainingTime(NewRemainingTime);
+	}
+}
+
 void AGameHUD::DrawHUD() {
 	Super::DrawHUD();
 }

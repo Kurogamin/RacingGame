@@ -17,12 +17,17 @@ ACarPawn::ACarPawn() {
 void ACarPawn::BeginPlay() {
 	Super::BeginPlay();
 
-	GetComponentByTag(CarMesh, "CarMesh");
-	CarMesh->OnComponentHit.AddDynamic(this, &ACarPawn::OnActorHit);
+	if (GetComponentByTag(CarMesh, "CarMesh")) {
+		CarMesh->OnComponentHit.AddDynamic(this, &ACarPawn::OnActorHit);
+	}
 
 	GetComponentByTag(SpringArm, "SpringArm");
 	GetComponentByTag(Camera, "Camera");
 	GetComponentByTag(SteeringWheelMesh, "SteeringWheel");
+	GetComponentByTag(FrontLeftWheelMesh, "FrontLeftWheel");
+	GetComponentByTag(FrontRightWheelMesh, "FrontRightWheel");
+	GetComponentByTag(FrontLeftWheelMeshTurn, "FrontLeftWheelTurn");
+	GetComponentByTag(FrontRightWheelMeshTurn, "FrontRightWheelTurn");
 
 	GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
@@ -31,11 +36,17 @@ void ACarPawn::BeginPlay() {
 
 // Called every frame
 void ACarPawn::Tick(float DeltaTime) {
+	if (!CanTick) {
+		return;
+	}
+
 	Super::Tick(DeltaTime);
 
 	if (CarMesh) {
 		ApplyThrottle(DeltaTime);
 		ApplySteering(DeltaTime);
+		RotateWheels();
+		RotateSteeringWheel();
 		CheckGears();
 
 		if (abs(CurrentSpeed.Length()) < 1.0f) {
@@ -58,6 +69,7 @@ void ACarPawn::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) 
 	PlayerInputComponent->BindAction("Camera1", IE_Pressed, this, &ACarPawn::SwitchCamera<1>);
 	PlayerInputComponent->BindAction("Camera2", IE_Pressed, this, &ACarPawn::SwitchCamera<2>);
 	PlayerInputComponent->BindAction("Camera3", IE_Pressed, this, &ACarPawn::SwitchCamera<3>);
+	PlayerInputComponent->BindAction("Camera4", IE_Pressed, this, &ACarPawn::SwitchCamera<4>);
 }
 
 void ACarPawn::SetThrottle(float ThrottleValue) {
@@ -108,9 +120,6 @@ void ACarPawn::ApplySteering(float DeltaTime) {
 	if (Steering == 0.0f) {
 		float SlowValue = IsBraking ? BrakeSteerSlowMultiplier : SteerSlowMultiplier;
 		CurrentSteering = 0.0f;
-		if (abs(CurrentSteering) < 0.1f) {
-			CurrentSteering = 0.0f;
-		}
 		Rotation = FVector(0, 0, CurrentSteering);
 		Rotation = IsBraking ? Rotation * DriftMultiplier : Rotation;
 		CarMesh->SetPhysicsAngularVelocityInDegrees(Rotation);
@@ -123,7 +132,10 @@ void ACarPawn::ApplySteering(float DeltaTime) {
 	Rotation = FVector(0, 0, CurrentSteering);
 	Rotation = IsBraking ? Rotation * DriftMultiplier : Rotation;
 
-	CarMesh->SetPhysicsAngularVelocityInDegrees(Rotation);
+	auto CurrentRotation = CarMesh->GetPhysicsAngularVelocityInDegrees();
+
+	CarMesh->SetPhysicsAngularVelocityInDegrees(
+			FMath::Lerp(CurrentRotation, Rotation, SteeringRotationLerpStep));
 }
 
 void ACarPawn::OnActorHit(UPrimitiveComponent *HitComp, AActor *OtherActor,
@@ -196,17 +208,34 @@ void ACarPawn::CheckGears() {
 }
 
 void ACarPawn::RotateSteeringWheel() {
+	FRotator CurrentRotation = SteeringWheelMesh->GetRelativeRotation();
+	FRotator NewRotation = FRotator(0.0, 0.0, Steering * 45.0f);
+	SteeringWheelMesh->SetRelativeRotation(
+			FMath::Lerp(CurrentRotation, NewRotation, SteeringRotationLerpStep));
 }
 
 void ACarPawn::RotateWheels() {
+	FRotator TurnRotation = FrontLeftWheelMeshTurn->GetRelativeRotation();
+	FRotator NewTurnRotation = TurnRotation;
+	NewTurnRotation.Pitch = Steering * MaxSteeringAngle;
+
+	FrontRightWheelMeshTurn->SetRelativeRotation(
+			FMath::Lerp(TurnRotation, NewTurnRotation, WheelRotationLerpStep));
+	FrontLeftWheelMeshTurn->SetRelativeRotation(
+			FMath::Lerp(TurnRotation, NewTurnRotation, WheelRotationLerpStep));
+
+	float WheelSpin = CurrentSpeed.Length() * 0.01f;
+	FrontLeftWheelMesh->AddLocalRotation(FRotator(-WheelSpin, 0.0, 0.0));
+	FrontRightWheelMesh->AddLocalRotation(FRotator(-WheelSpin, 0.0, 0.0));
+
+	//FrontLeftWheelMesh->SetRelativeRotation(NewWheelRotation);
+	//FrontRightWheelMesh->SetRelativeRotation(NewWheelRotation);
 }
 
 void ACarPawn::SwitchCamera(int CameraIndex) {
-	if (CameraIndex < 1 || CameraIndex > 3) {
+	if (CameraIndex < 1 || CameraIndex > 4) {
 		return;
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("Switching camera to %d"), CameraIndex);
 
 	Camera->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
 
@@ -221,6 +250,10 @@ void ACarPawn::SwitchCamera(int CameraIndex) {
 		case 3:
 			Camera->AttachToComponent(CarMesh, FAttachmentTransformRules::KeepRelativeTransform,
 					"CarInteriorGameplayCamera");
+			break;
+		case 4:
+			Camera->AttachToComponent(
+					CarMesh, FAttachmentTransformRules::KeepRelativeTransform, "LeftWheelCamera");
 			break;
 	}
 }

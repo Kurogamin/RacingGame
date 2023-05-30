@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PraktykiGameModeBase.h"
+#include "../Gameplay/CarPawn.h"
 #include "../Gameplay/CheckpointTrigger.h"
 #include "../Gameplay/LapData.h"
 #include "../UI/GameHUD.h"
@@ -15,26 +16,21 @@ void ARaceGameModeBase::BeginPlay() {
 	URacingGameInstance *GameInstance =
 			Cast<URacingGameInstance>(UGameplayStatics::GetGameInstance(World));
 
-	TArray<AActor *> CheckpointTriggers;
-	UGameplayStatics::GetAllActorsOfClass(
-			World, ACheckpointTrigger::StaticClass(), CheckpointTriggers);
-	NumberOfCheckpoints = CheckpointTriggers.Num();
-	BestCheckpointTimes.Init(1000.0f, NumberOfCheckpoints);
-	CurrentCheckpointTimes.Init(0.0f, NumberOfCheckpoints);
-
-	LapStartTime = UGameplayStatics::GetRealTimeSeconds(World);
 	GameStartTime = UGameplayStatics::GetRealTimeSeconds(World);
-
 	NumberOfLaps = GameInstance->GetNumberOfLaps();
-
 	CurrentRaceType = GameInstance->GetCurrentRaceType();
+
+	CarPawn = Cast<ACarPawn>(UGameplayStatics::GetPlayerPawn(this, 0));
 
 	if (CurrentRaceType == RaceType::Time) {
 		NumberOfSeconds = GameInstance->GetNumberOfSeconds();
 
-		GetWorldTimerManager().SetTimer(
-				EndGameTimer, this, &ARaceGameModeBase::EndCurrentRace, NumberOfSeconds, false);
+		GetWorldTimerManager().SetTimer(EndGameTimer, this, &ARaceGameModeBase::EndCurrentRace,
+				NumberOfSeconds + StartDelay, false);
 	}
+
+	GetWorldTimerManager().SetTimer(
+			StartGameTimer, this, &ARaceGameModeBase::StartRace, StartDelay, false);
 }
 
 ARaceGameModeBase::ARaceGameModeBase() {
@@ -58,6 +54,20 @@ void ARaceGameModeBase::AddCheckpoint(int CheckpointNumber) {
 	if (CheckpointsReachedNumber == NumberOfCheckpoints) {
 		CanFinishLap = true;
 	}
+}
+
+void ARaceGameModeBase::StartRace() {
+	auto World = GetWorld();
+	TArray<AActor *> CheckpointTriggers;
+	UGameplayStatics::GetAllActorsOfClass(
+			World, ACheckpointTrigger::StaticClass(), CheckpointTriggers);
+	NumberOfCheckpoints = CheckpointTriggers.Num();
+	BestCheckpointTimes.Init(1000.0f, NumberOfCheckpoints);
+	CurrentCheckpointTimes.Init(0.0f, NumberOfCheckpoints);
+	LapStartTime = UGameplayStatics::GetRealTimeSeconds(World);
+
+	CarPawn->CanTick = true;
+	GameStarted = true;
 }
 
 void ARaceGameModeBase::FinishLap() {
@@ -109,6 +119,12 @@ void ARaceGameModeBase::AddTimeLost(float AddValue) {
 
 void ARaceGameModeBase::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+
+	if (!GameStarted) {
+		int SecondsUntilStart = GetWorld()->GetTimerManager().GetTimerRemaining(StartGameTimer);
+		GameHUD->UpdateRemainingTime(SecondsUntilStart);
+		return;
+	}
 
 	float CurrentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
 

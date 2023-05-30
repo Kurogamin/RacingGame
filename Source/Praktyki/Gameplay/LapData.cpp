@@ -7,7 +7,7 @@ FString LapData::FloatToRoundedString(float Value, int Precision) {
 		Precision = 1;
 	}
 
-	int Multiplier = FMath::Pow(10, Precision);
+	int Multiplier = FMath::Pow(10.0f, (float)Precision);
 	float RoundedValue = FMath::RoundToZero(Value * Multiplier) / Multiplier;
 
 	FString RoundedString = FString::Printf(TEXT("%.3f"), RoundedValue);
