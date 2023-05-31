@@ -11,16 +11,22 @@ class UButton;
 class UComboBoxString;
 class URichTextBlock;
 class USlider;
+class UImage;
+class UTexture2D;
 
 /**
  *
  */
-UCLASS()
-class PRAKTYKI_API UMainMenuWidget : public UUserWidget {
+UCLASS() class PRAKTYKI_API UMainMenuWidget : public UUserWidget {
 	GENERATED_BODY()
 private:
 	int NumberOfSeconds = 60;
 	int NumberOfLaps = 1;
+
+	UTexture2D *ColorsTexture;
+
+	UFUNCTION()
+	void OnLeftMouseButtonPressed(FGeometry MyGeometry, FPointerEvent MouseEvent);
 
 protected:
 	virtual void NativeTick(const FGeometry &MyGeometry, float DeltaTime) override;
@@ -45,11 +51,17 @@ public:
 	UFUNCTION()
 	void OnGameTypeChanged(FString SelectedItem, ESelectInfo::Type SelectInfo);
 
+	UFUNCTION()
+	void SwitchColorsImageVisibility();
+
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UButton *StartGameButton;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UButton *QuitGameButton;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
+	class UButton *CarCustomizationButton;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class USlider *GameTimeSlider;
@@ -62,4 +74,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UComboBoxString *GameTypeComboBox;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
+	class UImage *ColorsImage;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
+	class UImage *CurrentColor;
 };

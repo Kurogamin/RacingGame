@@ -2,6 +2,7 @@
 
 #include "GameHUD.h"
 #include "../GameModes/PraktykiGameModeBase.h"
+#include "CarCustomizationWidget.h"
 #include "CarWidget.h"
 #include "MainMenuWidget.h"
 #include "ResultsMenuWidget.h"
@@ -38,6 +39,15 @@ void AGameHUD::BeginPlay() {
 
 		if (ResultsMenuWidget) {
 			ResultsMenuWidget->AddToViewport();
+		}
+	}
+
+	if (CarCustomizationWidgetClass) {
+		CarCustomizationWidget =
+				CreateWidget<UCarCustomizationWidget>(GetWorld(), CarCustomizationWidgetClass);
+
+		if (CarCustomizationWidget) {
+			CarCustomizationWidget->AddToViewport();
 		}
 	}
 }

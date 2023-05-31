@@ -10,6 +10,7 @@
 
 class UCarWidget;
 class UMainMenuWidget;
+class UCarCustomizationWidget;
 class UResultsMenuWidget;
 struct LapData;
 
@@ -46,8 +47,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UResultsMenuWidget> ResultsMenuWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UCarCustomizationWidget> CarCustomizationWidgetClass;
+
 private:
 	UCarWidget *CarWidget;
 	UMainMenuWidget *MainMenuWidget;
 	UResultsMenuWidget *ResultsMenuWidget;
+	UCarCustomizationWidget *CarCustomizationWidget;
 };
