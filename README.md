@@ -1,7 +1,7 @@
 # RacingGame
 This is my first ever Unreal Engine project.
 
-I made a simple racing game with gameplay heavly inspired by the game Trackmania. You use arrows to move the car and brake to slow down / drift.
+I made a simple racing game with gameplay heavily inspired by the game Trackmania. You use arrows to move the car and brake to slow down / drift.
 
 You can choose if you want to finish set amount of laps or set a time after which the game ends and try to get best possible lap time until the end.
 
