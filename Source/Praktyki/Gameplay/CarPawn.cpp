@@ -2,6 +2,7 @@
 
 #include "CarPawn.h"
 #include "../GameModes/PraktykiGameModeBase.h"
+#include "../GameModes/RacingGameInstance.h"
 #include "../UI/GameHUD.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -32,6 +33,8 @@ void ACarPawn::BeginPlay() {
 	GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
 	SpeedStep = BaseSpeedStep;
+
+	SetupMaterials();
 }
 
 // Called every frame
@@ -212,6 +215,50 @@ void ACarPawn::RotateSteeringWheel() {
 	FRotator NewRotation = FRotator(0.0, 0.0, Steering * 45.0f);
 	SteeringWheelMesh->SetRelativeRotation(
 			FMath::Lerp(CurrentRotation, NewRotation, SteeringRotationLerpStep));
+}
+
+void ACarPawn::SetupMaterials() {
+	URacingGameInstance *GameInstance = Cast<URacingGameInstance>(GetGameInstance());
+	auto CustomMaterialColors = GameInstance->GetCustomMaterialColors();
+	auto CustomParts = GameInstance->GetCustomParts();
+
+	UStaticMeshComponent *Mesh = nullptr;
+	UMaterialInterface *MeshMaterial = nullptr;
+	UMaterial *Material = Cast<UMaterial>(StaticLoadObject(
+			UMaterial::StaticClass(), nullptr, TEXT("/Game/Materials/CustomMaterial")));
+
+	if (CustomParts[0]) {
+		auto DynamicMaterial = UMaterialInstanceDynamic::Create(Material, nullptr);
+		DynamicMaterial->SetVectorParameterValue("Color", CustomMaterialColors[0]);
+		GetComponentByTag(Mesh, "HoodMesh");
+		MeshMaterial = Mesh->GetMaterials()[0];
+		MeshMaterial = DynamicMaterial;
+		Mesh->SetMaterial(0, MeshMaterial);
+	}
+	if (CustomParts[1]) {
+		auto DynamicMaterial = UMaterialInstanceDynamic::Create(Material, nullptr);
+		DynamicMaterial->SetVectorParameterValue("Color", CustomMaterialColors[1]);
+		GetComponentByTag(Mesh, "SpoilerMesh");
+		MeshMaterial = Mesh->GetMaterials()[0];
+		MeshMaterial = DynamicMaterial;
+		Mesh->SetMaterial(0, MeshMaterial);
+	}
+	if (CustomParts[2]) {
+		auto DynamicMaterial = UMaterialInstanceDynamic::Create(Material, nullptr);
+		DynamicMaterial->SetVectorParameterValue("Color", CustomMaterialColors[2]);
+		GetComponentByTag(Mesh, "LeftDoorMesh");
+		MeshMaterial = Mesh->GetMaterials()[0];
+		MeshMaterial = DynamicMaterial;
+		Mesh->SetMaterial(0, MeshMaterial);
+	}
+	if (CustomParts[3]) {
+		auto DynamicMaterial = UMaterialInstanceDynamic::Create(Material, nullptr);
+		DynamicMaterial->SetVectorParameterValue("Color", CustomMaterialColors[3]);
+		GetComponentByTag(Mesh, "RightDoorMesh");
+		MeshMaterial = Mesh->GetMaterials()[0];
+		MeshMaterial = DynamicMaterial;
+		Mesh->SetMaterial(0, MeshMaterial);
+	}
 }
 
 void ACarPawn::RotateWheels() {

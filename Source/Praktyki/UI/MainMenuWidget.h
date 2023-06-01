@@ -23,6 +23,8 @@ private:
 	int NumberOfSeconds = 60;
 	int NumberOfLaps = 1;
 
+	void UpdateGameInstance();
+
 protected:
 	virtual void NativeTick(const FGeometry &MyGeometry, float DeltaTime) override;
 

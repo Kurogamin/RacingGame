@@ -19,7 +19,7 @@ private:
 	LapData BestLapData;
 	RaceType CurrentRaceType;
 
-	TArray<UMaterialInstanceDynamic *> CarPartsMaterials;
+	TArray<FLinearColor> CarPartsColors;
 	TArray<bool> CustomParts;
 
 public:
@@ -33,4 +33,9 @@ public:
 	void SetNumberOfLaps(int NewNumberOfLaps);
 	void SetNumberOfSeconds(int NewNumberOfSeconds);
 	void SetBestLap(LapData NewBestLap);
+	void SetCustomMaterialColor(int PartIndex, FLinearColor Color);
+	void SetCustomPart(int PartIndex, bool IsCustom);
+	void SetCustomParts(TArray<bool> NewCustomParts);
+	TArray<FLinearColor> GetCustomMaterialColors();
+	TArray<bool> GetCustomParts();
 };

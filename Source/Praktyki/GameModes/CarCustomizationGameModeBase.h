@@ -47,4 +47,6 @@ public:
 	void SetCustomPart(int PartIndex, bool IsCustom);
 	void ReloadMaterial(int PartIndex);
 	void SetMaterialColor(int PartIndex, FLinearColor Color);
+
+	TArray<UMaterialInstanceDynamic *> GetCarPartsMaterials() const;
 };

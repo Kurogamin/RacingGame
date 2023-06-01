@@ -2,6 +2,8 @@
 
 #include "CarCustomizationWidget.h"
 #include "../GameModes/CarCustomizationGameModeBase.h"
+#include "../GameModes/RacingGameInstance.h"
+#include "Components/Button.h"
 #include "Components/CheckBox.h"
 #include "Components/ComboBoxString.h"
 #include "Components/Image.h"
@@ -34,6 +36,14 @@ void UCarCustomizationWidget::NativeConstruct() {
 
 	if (ColorsImage) {
 		ColorsImage->OnMouseButtonDownEvent.BindUFunction(this, FName("OnLeftMouseButtonPressed"));
+	}
+
+	if (StartGameButton) {
+		StartGameButton->OnClicked.AddDynamic(this, &UCarCustomizationWidget::StartGame);
+	}
+
+	if (MainMenuButton) {
+		MainMenuButton->OnClicked.AddDynamic(this, &UCarCustomizationWidget::MainMenu);
 	}
 
 	ColorsTexture = Cast<UTexture2D>(
@@ -128,11 +138,26 @@ void UCarCustomizationWidget::OnLeftMouseButtonPressed(
 			FByteBulkData *RawImageData = &ColorsTextureMipMap->BulkData;
 			FColor *FormatedImageData = static_cast<FColor *>(RawImageData->Lock(LOCK_READ_ONLY));
 
-			FColor PixelColor = FormatedImageData[PixelY * TextureWidth + PixelX];
+			FLinearColor PixelColor = FormatedImageData[PixelY * TextureWidth + PixelX];
 			RawImageData->Unlock();
 
 			CurrentPartColorImage->SetColorAndOpacity(FLinearColor(PixelColor));
 			GameMode->SetMaterialColor((int)CurrentCarPart, PixelColor);
+
+			URacingGameInstance *GameInstance = Cast<URacingGameInstance>(GetGameInstance());
+			GameInstance->SetCustomMaterialColor((int)CurrentCarPart, PixelColor);
 		}
 	}
+}
+
+void UCarCustomizationWidget::StartGame() {
+	auto GameInstance = Cast<URacingGameInstance>(GetGameInstance());
+	GameInstance->SetCustomParts(CustomCarPart);
+	UGameplayStatics::OpenLevel(GetWorld(), "TestMap");
+}
+
+void UCarCustomizationWidget::MainMenu() {
+	auto GameInstance = Cast<URacingGameInstance>(GetGameInstance());
+	GameInstance->SetCustomParts(CustomCarPart);
+	UGameplayStatics::OpenLevel(GetWorld(), "MainMenuMap");
 }

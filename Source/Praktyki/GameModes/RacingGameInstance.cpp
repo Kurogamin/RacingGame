@@ -3,6 +3,8 @@
 #include "RacingGameInstance.h"
 
 URacingGameInstance::URacingGameInstance() {
+	CarPartsColors.Init(FLinearColor::Black, 4);
+	CustomParts.Init(false, 4);
 }
 
 int URacingGameInstance::GetNumberOfLaps() const {
@@ -37,4 +39,24 @@ void URacingGameInstance::SetNumberOfSeconds(int NewNumberOfSeconds) {
 
 void URacingGameInstance::SetBestLap(LapData NewBestLap) {
 	BestLapData = NewBestLap;
+}
+
+void URacingGameInstance::SetCustomMaterialColor(int PartIndex, FLinearColor Color) {
+	CarPartsColors[PartIndex] = Color;
+}
+
+void URacingGameInstance::SetCustomPart(int PartIndex, bool IsCustom) {
+	CustomParts[PartIndex] = IsCustom;
+}
+
+void URacingGameInstance::SetCustomParts(TArray<bool> NewCustomParts) {
+	CustomParts = NewCustomParts;
+}
+
+TArray<FLinearColor> URacingGameInstance::GetCustomMaterialColors() {
+	return CarPartsColors;
+}
+
+TArray<bool> URacingGameInstance::GetCustomParts() {
+	return CustomParts;
 }

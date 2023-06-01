@@ -41,12 +41,7 @@ void UMainMenuWidget::NativeConstruct() {
 }
 
 void UMainMenuWidget::OpenRaceLevel() {
-	auto World = GetWorld();
-	URacingGameInstance *GameInstance =
-			Cast<URacingGameInstance>(UGameplayStatics::GetGameInstance(World));
-	GameInstance->SetNumberOfLaps(NumberOfLaps);
-	GameInstance->SetNumberOfSeconds(NumberOfSeconds);
-
+	UpdateGameInstance();
 	UGameplayStatics::OpenLevel(GetWorld(), FName("TestMap"));
 }
 
@@ -78,6 +73,14 @@ void UMainMenuWidget::OnGameTypeChanged(FString SelectedItem, ESelectInfo::Type 
 	}
 }
 
+void UMainMenuWidget::UpdateGameInstance() {
+	auto World = GetWorld();
+	URacingGameInstance *GameInstance =
+			Cast<URacingGameInstance>(UGameplayStatics::GetGameInstance(World));
+	GameInstance->SetNumberOfLaps(NumberOfLaps);
+	GameInstance->SetNumberOfSeconds(NumberOfSeconds);
+}
+
 void UMainMenuWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime) {
 	Super::Tick(MyGeometry, DeltaTime);
 
@@ -93,5 +96,6 @@ void UMainMenuWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime) {
 }
 
 void UMainMenuWidget::LoadCarCustomization() {
+	UpdateGameInstance();
 	UGameplayStatics::OpenLevel(GetWorld(), FName("CarCustomizationMap"));
 }

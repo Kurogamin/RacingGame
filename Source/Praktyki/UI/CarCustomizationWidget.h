@@ -13,6 +13,7 @@
 class UImage;
 class ACarCustomizationGameModeBase;
 class UTexture2D;
+class UButton;
 
 UENUM()
 enum class CarPart { Hood, Spoiler, LeftDoor, RightDoor, Overview };
@@ -42,6 +43,12 @@ public:
 
 	UFUNCTION()
 	void OnLeftMouseButtonPressed(FGeometry MyGeometry, FPointerEvent MouseEvent);
+
+	UFUNCTION()
+	void StartGame();
+
+	UFUNCTION()
+	void MainMenu();
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UComboBoxString *CurrentCustomizationComboBoxString;
@@ -78,4 +85,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UTextBlock *CustomText;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
+	class UButton *StartGameButton;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
+	class UButton *MainMenuButton;
 };

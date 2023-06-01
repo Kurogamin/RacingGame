@@ -104,6 +104,7 @@ private:
 	void SwitchCamera(int CameraIndex);
 	void RotateWheels();
 	void RotateSteeringWheel();
+	void SetupMaterials();
 
 	template <int Index> void SwitchCamera() {
 		SwitchCamera(Index);

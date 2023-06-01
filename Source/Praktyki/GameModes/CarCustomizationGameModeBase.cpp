@@ -103,3 +103,7 @@ void ACarCustomizationGameModeBase::SetMaterialColor(int PartIndex, FLinearColor
 	CarPartsMaterials[PartIndex]->SetVectorParameterValue("Color", Color);
 	ReloadMaterial(PartIndex);
 }
+
+TArray<UMaterialInstanceDynamic *> ACarCustomizationGameModeBase::GetCarPartsMaterials() const {
+	return CarPartsMaterials;
+}
