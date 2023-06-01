@@ -23,11 +23,6 @@ private:
 	int NumberOfSeconds = 60;
 	int NumberOfLaps = 1;
 
-	UTexture2D *ColorsTexture;
-
-	UFUNCTION()
-	void OnLeftMouseButtonPressed(FGeometry MyGeometry, FPointerEvent MouseEvent);
-
 protected:
 	virtual void NativeTick(const FGeometry &MyGeometry, float DeltaTime) override;
 
@@ -52,7 +47,7 @@ public:
 	void OnGameTypeChanged(FString SelectedItem, ESelectInfo::Type SelectInfo);
 
 	UFUNCTION()
-	void SwitchColorsImageVisibility();
+	void LoadCarCustomization();
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UButton *StartGameButton;
@@ -74,10 +69,4 @@ public:
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UComboBoxString *GameTypeComboBox;
-
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
-	class UImage *ColorsImage;
-
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
-	class UImage *CurrentColor;
 };

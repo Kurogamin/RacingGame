@@ -5,6 +5,7 @@
 #include "Components/CheckBox.h"
 #include "Components/ComboBoxString.h"
 #include "Components/Image.h"
+#include "Components/StaticMeshComponent.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -21,50 +22,117 @@ void UCarCustomizationWidget::NativeConstruct() {
 	ColorsTexture = Cast<UTexture2D>(
 			StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Game/UI/Images/Colors")));
 
-	HoodMaterial = Cast<UMaterial>(StaticLoadObject(
-			UMaterial::StaticClass(), nullptr, TEXT("/Game/Materials/HoodMaterial")));
-
-	SpoilerMaterial = Cast<UMaterial>(StaticLoadObject(
-			UMaterial::StaticClass(), nullptr, TEXT("/Game/Materials/SpoilerMaterial")));
-
-	LeftDoorMaterial = Cast<UMaterial>(StaticLoadObject(
-			UMaterial::StaticClass(), nullptr, TEXT("/Game/Materials/LeftDoorMaterial")));
-
-	RightDoorMaterial = Cast<UMaterial>(StaticLoadObject(
-			UMaterial::StaticClass(), nullptr, TEXT("/Game/Materials/RightDoorMaterial")));
-
 	if (CurrentCustomizationComboBoxString) {
 		CurrentCustomizationComboBoxString->OnSelectionChanged.AddDynamic(
 				this, &UCarCustomizationWidget::OnCarPartChanged);
 	}
+
+	if (CustomCheckBox) {
+		CustomCheckBox->OnCheckStateChanged.AddDynamic(
+				this, &UCarCustomizationWidget::OnCustomCheckboxChanged);
+	}
+
+	if (ColorsImage) {
+		ColorsImage->OnMouseButtonDownEvent.BindUFunction(this, FName("OnLeftMouseButtonPressed"));
+	}
+
+	ColorsTexture = Cast<UTexture2D>(
+			StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Game/UI/Images/Colors")));
 }
 
 void UCarCustomizationWidget::OnCarPartChanged(FString SelectedItem, ESelectInfo::Type SelectInfo) {
-	UE_LOG(LogTemp, Warning, TEXT("SELECTED ITEM: %s"), *SelectedItem);
 	if (SelectedItem == "Overview") {
 		CustomCheckBox->SetVisibility(ESlateVisibility::Hidden);
 		CustomText->SetVisibility(ESlateVisibility::Hidden);
+		ColorsImage->SetVisibility(ESlateVisibility::Hidden);
 		GameMode->ChangeCameraPosition(4);
+		CurrentPartColorImage = nullptr;
 		return;
 	}
 	CustomCheckBox->SetVisibility(ESlateVisibility::Visible);
 	CustomText->SetVisibility(ESlateVisibility::Visible);
+	int CurrentPartIndex = 0;
 
 	if (SelectedItem == "Hood") {
-		CustomCheckBox->SetIsChecked(CustomCarPart[0]);
-		GameMode->ChangeCameraPosition(0);
+		CurrentPartIndex = 0;
 		CurrentCarPart = CarPart::Hood;
+		CurrentPartColorImage = HoodColorImage;
 	} else if (SelectedItem == "Spoiler") {
-		CustomCheckBox->SetIsChecked(CustomCarPart[1]);
-		GameMode->ChangeCameraPosition(1);
+		CurrentPartIndex = 1;
 		CurrentCarPart = CarPart::Spoiler;
+		CurrentPartColorImage = SpoilerColorImage;
 	} else if (SelectedItem == "LeftDoor") {
-		CustomCheckBox->SetIsChecked(CustomCarPart[2]);
-		GameMode->ChangeCameraPosition(2);
+		CurrentPartIndex = 2;
 		CurrentCarPart = CarPart::LeftDoor;
+		CurrentPartColorImage = LeftDoorColorImage;
 	} else if (SelectedItem == "RightDoor") {
-		CustomCheckBox->SetIsChecked(CustomCarPart[3]);
-		GameMode->ChangeCameraPosition(3);
+		CurrentPartIndex = 3;
 		CurrentCarPart = CarPart::RightDoor;
+		CurrentPartColorImage = RightDoorColorImage;
+	}
+
+	ESlateVisibility ColorsVisibility =
+			CustomCarPart[CurrentPartIndex] ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+	ColorsImage->SetVisibility(ColorsVisibility);
+	GameMode->ChangeCameraPosition(CurrentPartIndex);
+	bool CustomPart = CustomCarPart[CurrentPartIndex];
+	CustomCheckBox->SetIsChecked(CustomPart);
+}
+
+void UCarCustomizationWidget::OnCustomCheckboxChanged(bool NewValue) {
+	ESlateVisibility NewVisibility =
+			NewValue ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+	switch (CurrentCarPart) {
+		case CarPart::Hood:
+			HoodColorImage->SetVisibility(NewVisibility);
+			HoodTextBlock->SetVisibility(NewVisibility);
+			break;
+		case CarPart::Spoiler:
+			SpoilerColorImage->SetVisibility(NewVisibility);
+			SpoilerTextBlock->SetVisibility(NewVisibility);
+			break;
+		case CarPart::LeftDoor:
+			LeftDoorColorImage->SetVisibility(NewVisibility);
+			LeftDoorTextBlock->SetVisibility(NewVisibility);
+			break;
+		case CarPart::RightDoor:
+			RightDoorColorImage->SetVisibility(NewVisibility);
+			RightDoorTextBlock->SetVisibility(NewVisibility);
+			break;
+	}
+	CustomCarPart[(int)CurrentCarPart] = NewValue;
+	ColorsImage->SetVisibility(NewVisibility);
+	GameMode->SetCustomPart((int)CurrentCarPart, NewValue);
+}
+
+void UCarCustomizationWidget::OnLeftMouseButtonPressed(
+		FGeometry MyGeometry, FPointerEvent MouseEvent) {
+	if (MouseEvent.GetEffectingButton() == EKeys::LeftMouseButton) {
+		FVector2D LocalCursorPos = MyGeometry.AbsoluteToLocal(MouseEvent.GetScreenSpacePosition());
+
+		if (ColorsImage && ColorsTexture && CurrentPartColorImage) {
+			if (!ColorsImage->IsHovered() || !ColorsImage->IsVisible()) {
+				return;
+			}
+
+			int TextureWidth = ColorsTexture->GetSurfaceWidth();
+			int TextureHeight = ColorsTexture->GetSurfaceHeight();
+
+			float U = LocalCursorPos.X / MyGeometry.GetLocalSize().X;
+			float V = LocalCursorPos.Y / MyGeometry.GetLocalSize().Y;
+
+			int PixelX = FMath::FloorToInt(U * TextureWidth);
+			int PixelY = FMath::FloorToInt(V * TextureHeight);
+
+			FTexture2DMipMap *ColorsTextureMipMap = &ColorsTexture->GetPlatformData()->Mips[0];
+			FByteBulkData *RawImageData = &ColorsTextureMipMap->BulkData;
+			FColor *FormatedImageData = static_cast<FColor *>(RawImageData->Lock(LOCK_READ_ONLY));
+
+			FColor PixelColor = FormatedImageData[PixelY * TextureWidth + PixelX];
+			RawImageData->Unlock();
+
+			CurrentPartColorImage->SetColorAndOpacity(FLinearColor(PixelColor));
+			GameMode->SetMaterialColor((int)CurrentCarPart, PixelColor);
+		}
 	}
 }

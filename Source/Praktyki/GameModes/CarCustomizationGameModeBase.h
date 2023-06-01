@@ -8,6 +8,7 @@
 #include "CarCustomizationGameModeBase.generated.h"
 
 class ACameraPawn;
+class UMaterialInstanceDynamic;
 
 /**
  *
@@ -18,11 +19,22 @@ class PRAKTYKI_API ACarCustomizationGameModeBase : public AGameModeBase {
 private:
 	ACameraPawn *CameraPawn;
 	int CurrentCameraPosition = 4;
+	bool FoundMeshes = false;
+
+	TArray<UStaticMeshComponent *> CarPartsMeshes;
+	TArray<UMaterialInstanceDynamic *> CarPartsMaterials;
+	TArray<UMaterialInstanceDynamic *> DefaultCarPartsMaterials;
+	TArray<bool> CustomParts;
+
+	void FindCarPartsMeshes();
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 public:
+	ACarCustomizationGameModeBase();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FVector> CameraPositions;
 
@@ -31,4 +43,8 @@ public:
 
 	UFUNCTION()
 	void ChangeCameraPosition(int NewCameraPosition);
+
+	void SetCustomPart(int PartIndex, bool IsCustom);
+	void ReloadMaterial(int PartIndex);
+	void SetMaterialColor(int PartIndex, FLinearColor Color);
 };

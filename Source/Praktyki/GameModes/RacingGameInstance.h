@@ -19,6 +19,9 @@ private:
 	LapData BestLapData;
 	RaceType CurrentRaceType;
 
+	TArray<UMaterialInstanceDynamic *> CarPartsMaterials;
+	TArray<bool> CustomParts;
+
 public:
 	URacingGameInstance();
 
