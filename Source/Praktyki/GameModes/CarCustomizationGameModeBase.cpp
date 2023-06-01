@@ -11,7 +11,7 @@ void ACarCustomizationGameModeBase::BeginPlay() {
 	CameraPawn = Cast<ACameraPawn>(UGameplayStatics::GetPlayerPawn(this, 0));
 }
 
-void ACarCustomizationGameModeBase::ChangeCameraPosition(CameraPosition NewCameraPosition) {
+void ACarCustomizationGameModeBase::ChangeCameraPosition(int NewCameraPosition) {
 	if (NewCameraPosition == CurrentCameraPosition) {
 		return;
 	}
@@ -20,5 +20,8 @@ void ACarCustomizationGameModeBase::ChangeCameraPosition(CameraPosition NewCamer
 	}
 
 	CameraPawn->SetActorLocation(CameraPositions[NewCameraPosition]);
-	CameraPawn->SetActorRotation(CameraRotations[NewCameraPosition]);
+	//CameraPawn->SetActorRotation(CameraRotations[NewCameraPosition]);
+	UGameplayStatics::GetPlayerController(this, 0)->ClientSetRotation(
+			CameraRotations[NewCameraPosition]);
+	CurrentCameraPosition = NewCameraPosition;
 }

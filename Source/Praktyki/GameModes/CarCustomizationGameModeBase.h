@@ -9,9 +9,6 @@
 
 class ACameraPawn;
 
-UENUM()
-enum CameraPosition { Hood, Spoiler, LeftDoor, RightDoor };
-
 /**
  *
  */
@@ -20,7 +17,7 @@ class PRAKTYKI_API ACarCustomizationGameModeBase : public AGameModeBase {
 	GENERATED_BODY()
 private:
 	ACameraPawn *CameraPawn;
-	CameraPosition CurrentCameraPosition = CameraPosition::Hood;
+	int CurrentCameraPosition = 4;
 
 protected:
 	virtual void BeginPlay() override;
@@ -33,5 +30,5 @@ public:
 	TArray<FRotator> CameraRotations;
 
 	UFUNCTION()
-	void ChangeCameraPosition(CameraPosition NewCameraPosition);
+	void ChangeCameraPosition(int NewCameraPosition);
 };
