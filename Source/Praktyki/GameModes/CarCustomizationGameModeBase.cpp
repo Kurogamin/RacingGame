@@ -89,12 +89,16 @@ void ACarCustomizationGameModeBase::FindCarPartsMeshes() {
 }
 
 void ACarCustomizationGameModeBase::ReloadMaterial(int PartIndex) {
+	if (PartIndex >= CarPartsMeshes.Num() || PartIndex >= DefaultCarPartsMaterials.Num() ||
+			PartIndex >= CustomParts.Num()) {
+		return;
+	}
 	UStaticMeshComponent *CurrentPart = CarPartsMeshes[PartIndex];
-	if (!CurrentPart) {
+	if (!IsValid(CurrentPart)) {
 		return;
 	}
 	TArray<UMaterialInterface *> Materials = CurrentPart->GetMaterials();
-	if (!Materials[0]) {
+	if (!Materials.IsValidIndex(0) || !IsValid(Materials[0])) {
 		return;
 	}
 	if (CustomParts[PartIndex]) {

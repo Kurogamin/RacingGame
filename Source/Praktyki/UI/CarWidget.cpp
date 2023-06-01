@@ -144,8 +144,8 @@ void UCarWidget::UpdateCheckpointDifference(float NewCheckpointDifference) {
 			CheckpointDifferenceString =
 					GetStringWithTag(FString("Blue36"), CheckpointDifferenceString);
 		} else if (NewCheckpointDifference < 0.0f) {
-			CheckpointDifferenceString =
-					FString("+") + GetStringWithTag(FString("Red36"), CheckpointDifferenceString);
+			CheckpointDifferenceString = FString("<Red36>+</>") +
+					GetStringWithTag(FString("Red36"), CheckpointDifferenceString);
 		} else {
 			CheckpointDifferenceString = FString("");
 		}
