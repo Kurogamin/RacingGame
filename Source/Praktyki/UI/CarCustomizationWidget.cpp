@@ -141,7 +141,7 @@ void UCarCustomizationWidget::OnLeftMouseButtonPressed(
 			FLinearColor PixelColor = FormatedImageData[PixelY * TextureWidth + PixelX];
 			RawImageData->Unlock();
 
-			CurrentPartColorImage->SetColorAndOpacity(FLinearColor(PixelColor));
+			CurrentPartColorImage->SetColorAndOpacity(PixelColor);
 			GameMode->SetMaterialColor((int)CurrentCarPart, PixelColor);
 
 			URacingGameInstance *GameInstance = Cast<URacingGameInstance>(GetGameInstance());

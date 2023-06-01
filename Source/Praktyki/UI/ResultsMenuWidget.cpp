@@ -30,7 +30,15 @@ void UResultsMenuWidget::RestartGame() {
 
 void UResultsMenuWidget::UpdateBestLap(LapData NewBestLapData) {
 	if (BestLapText) {
-		BestLapText->SetText(FText::FromString(NewBestLapData.ToRichString()));
+		FString BestLapString = NewBestLapData.ToRichString() + FString("\n");
+		NewBestLapData.CheckpointTimes.Sort();
+		int i = 0;
+		for (auto Checkpoint : NewBestLapData.CheckpointTimes) {
+			i++;
+			BestLapString += FString::Printf(TEXT("Checkpoint %i: "), i) +
+					LapData::FloatToRoundedString(Checkpoint) + FString("\n");
+		}
+		BestLapText->SetText(FText::FromString(BestLapString));
 	}
 }
 

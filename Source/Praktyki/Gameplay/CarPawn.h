@@ -61,6 +61,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Car|Speed")
 	float MaxSpeed = 650.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Car|Speed")
+	float ThrottleSlowMultiplier = 0.998f;
+
 	UPROPERTY(EditAnywhere, Category = "Car|Steering")
 	float MaxSteeringAngle = 40.0f; // ?
 

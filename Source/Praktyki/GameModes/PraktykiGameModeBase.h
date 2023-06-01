@@ -50,6 +50,7 @@ private:
 	// Lap Times
 	TArray<LapData> LapTimes;
 	LapData BestLapData;
+	LapData SecondBestLapData;
 
 	void AddLapData();
 

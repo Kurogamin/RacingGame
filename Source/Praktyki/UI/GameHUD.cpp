@@ -105,6 +105,18 @@ void AGameHUD::UpdateRemainingTime(int NewRemainingTime) {
 	}
 }
 
+void AGameHUD::UpdateRemainingGameTime(float NewRemainingGameTime) {
+	if (CarWidget) {
+		CarWidget->UpdateRemainingGameTime(NewRemainingGameTime);
+	}
+}
+
+void AGameHUD::UpdateCheckpointDifference(float NewCheckpointDifference) {
+	if (CarWidget) {
+		CarWidget->UpdateCheckpointDifference(NewCheckpointDifference);
+	}
+}
+
 void AGameHUD::DrawHUD() {
 	Super::DrawHUD();
 }

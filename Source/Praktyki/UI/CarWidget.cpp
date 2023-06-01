@@ -14,6 +14,15 @@ FString GetStringWithTag(FString Tag, float Text) {
 	return FString("<") + Tag + FString(">") + FString::SanitizeFloat(Text) + FString("</>");
 }
 
+void UCarWidget::HideCheckpointTimes() {
+	if (CurrentCheckpointText) {
+		CurrentCheckpointText->SetText(FText::FromString(""));
+	}
+	if (CheckpointDifferenceText) {
+		CheckpointDifferenceText->SetText(FText::FromString(""));
+	}
+}
+
 UCarWidget::UCarWidget(const FObjectInitializer &ObjectInitializer) : Super(ObjectInitializer) {
 }
 
@@ -65,7 +74,7 @@ void UCarWidget::UpdateCheckpoints(int CurrentCheckpoints, int MaxCheckpoints) {
 
 void UCarWidget::UpdateLaps(int CurrentLap, int MaxLaps) {
 	if (LapsText) {
-		if (MaxLaps == 0 || CurrentLap == MaxLaps) {
+		if (MaxLaps == 0 || CurrentLap == MaxLaps || MaxLaps == 1) {
 			LapsText->SetText(FText::FromString(FString("")));
 			return;
 		}
@@ -95,6 +104,8 @@ void UCarWidget::UpdateBestLapTime(LapData NewBestLapData) {
 
 void UCarWidget::UpdateCurrentCheckpoint(float NewCurrentCheckpoint) {
 	if (CurrentCheckpointText) {
+		GetWorld()->GetTimerManager().SetTimer(
+				HideCheckpointTimeTimerHandle, this, &UCarWidget::HideCheckpointTimes, 2.0f, false);
 		FString StringCurrentCheckpoint = LapData::FloatToRoundedString(NewCurrentCheckpoint);
 		CurrentCheckpointText->SetText(FText::FromString(StringCurrentCheckpoint));
 	}
@@ -107,5 +118,38 @@ void UCarWidget::UpdateRemainingTime(int NewRemainingTime) {
 		} else {
 			RemainingTimeText->SetText(FText::FromString(FString("")));
 		}
+	}
+}
+
+void UCarWidget::UpdateRemainingGameTime(float NewRemainingGameTime) {
+	if (RemainingGameTimeText) {
+		if (NewRemainingGameTime >= 0.0f) {
+			RemainingGameTimeText->SetText(
+					FText::FromString(LapData::FloatToRoundedString(NewRemainingGameTime)));
+		} else {
+			RemainingGameTimeText->SetText(FText::FromString(FString("")));
+		}
+	}
+}
+
+void UCarWidget::UpdateCheckpointDifference(float NewCheckpointDifference) {
+	if (CheckpointDifferenceText) {
+		if (NewCheckpointDifference > 500.0f) {
+			CheckpointDifferenceText->SetText(FText::FromString(FString("")));
+			return;
+		}
+		FString CheckpointDifferenceString =
+				LapData::FloatToRoundedString(-NewCheckpointDifference);
+		if (NewCheckpointDifference > 0.0f) {
+			CheckpointDifferenceString =
+					GetStringWithTag(FString("Blue36"), CheckpointDifferenceString);
+		} else if (NewCheckpointDifference < 0.0f) {
+			CheckpointDifferenceString =
+					FString("+") + GetStringWithTag(FString("Red36"), CheckpointDifferenceString);
+		} else {
+			CheckpointDifferenceString = FString("");
+		}
+
+		CheckpointDifferenceText->SetText(FText::FromString(CheckpointDifferenceString));
 	}
 }

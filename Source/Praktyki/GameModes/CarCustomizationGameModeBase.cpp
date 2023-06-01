@@ -90,7 +90,13 @@ void ACarCustomizationGameModeBase::FindCarPartsMeshes() {
 
 void ACarCustomizationGameModeBase::ReloadMaterial(int PartIndex) {
 	UStaticMeshComponent *CurrentPart = CarPartsMeshes[PartIndex];
+	if (!CurrentPart) {
+		return;
+	}
 	TArray<UMaterialInterface *> Materials = CurrentPart->GetMaterials();
+	if (!Materials[0]) {
+		return;
+	}
 	if (CustomParts[PartIndex]) {
 		Materials[0] = CarPartsMaterials[PartIndex];
 	} else {

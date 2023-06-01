@@ -24,6 +24,7 @@ private:
 	int NumberOfLaps = 1;
 
 	void UpdateGameInstance();
+	bool MultiLap = false;
 
 protected:
 	virtual void NativeTick(const FGeometry &MyGeometry, float DeltaTime) override;

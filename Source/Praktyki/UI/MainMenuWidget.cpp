@@ -63,12 +63,14 @@ void UMainMenuWidget::OnGameTypeChanged(FString SelectedItem, ESelectInfo::Type 
 		if (SelectedItem == "Single Lap") {
 			GameTimeSlider->SetVisibility(ESlateVisibility::Visible);
 			GameLapsSlider->SetVisibility(ESlateVisibility::Hidden);
+			MultiLap = false;
 		} else if (SelectedItem == "Multi Lap") {
 			if (NumberOfLaps == 1) {
 				NumberOfLaps = 2;
 			}
 			GameTimeSlider->SetVisibility(ESlateVisibility::Hidden);
 			GameLapsSlider->SetVisibility(ESlateVisibility::Visible);
+			MultiLap = true;
 		}
 	}
 }
@@ -77,8 +79,12 @@ void UMainMenuWidget::UpdateGameInstance() {
 	auto World = GetWorld();
 	URacingGameInstance *GameInstance =
 			Cast<URacingGameInstance>(UGameplayStatics::GetGameInstance(World));
-	GameInstance->SetNumberOfLaps(NumberOfLaps);
-	GameInstance->SetNumberOfSeconds(NumberOfSeconds);
+	if (MultiLap) {
+		GameInstance->SetNumberOfLaps(NumberOfLaps);
+	} else {
+		GameInstance->SetNumberOfLaps(1);
+		GameInstance->SetNumberOfSeconds(NumberOfSeconds);
+	}
 }
 
 void UMainMenuWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime) {

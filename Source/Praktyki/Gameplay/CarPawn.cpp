@@ -100,6 +100,11 @@ void ACarPawn::ApplyThrottle(float DeltaTime) {
 		return;
 	}
 
+	if (Throttle == 0.0f) {
+		Speed = CurrentSpeed.Length() * ThrottleSlowMultiplier;
+		CarMesh->SetPhysicsLinearVelocity(CurrentSpeed);
+	}
+
 	float LocalAccelerationStep = SpeedStep;
 	if (ShiftingGears) {
 		LocalAccelerationStep *= GearShiftSlowMultiplier;

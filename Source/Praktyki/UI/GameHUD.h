@@ -37,6 +37,8 @@ public:
 	bool UpdateBestLap(LapData NewBestLapData);
 	void UpdateCurrentCheckpoint(float NewCurrentCheckpoint);
 	void UpdateRemainingTime(int NewRemainingTime);
+	void UpdateRemainingGameTime(float NewRemainingGameTime);
+	void UpdateCheckpointDifference(float NewCheckpointDifference);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UCarWidget> CarWidgetClass;

@@ -41,6 +41,9 @@ void ARaceGameModeBase::AddCheckpoint(int CheckpointNumber) {
 	if (CheckpointsReached.Contains(CheckpointNumber)) {
 		return;
 	}
+	float CheckpointDifference = BestCheckpointTimes[CheckpointNumber] - CurrentLapTime;
+	GameHUD->UpdateCheckpointDifference(CheckpointDifference);
+
 	if (BestCheckpointTimes[CheckpointNumber] > CurrentLapTime) {
 		BestCheckpointTimes[CheckpointNumber] = CurrentLapTime;
 	}
@@ -65,6 +68,7 @@ void ARaceGameModeBase::StartRace() {
 	BestCheckpointTimes.Init(1000.0f, NumberOfCheckpoints);
 	CurrentCheckpointTimes.Init(0.0f, NumberOfCheckpoints);
 	LapStartTime = UGameplayStatics::GetRealTimeSeconds(World);
+	GameHUD->UpdateRemainingTime(-1);
 
 	CarPawn->CanTick = true;
 	GameStarted = true;
@@ -105,8 +109,12 @@ void ARaceGameModeBase::AddLapData() {
 	if (CurrentLapData > BestLapData) {
 		BestLapData = CurrentLapData;
 		GameHUD->UpdateBestLap(BestLapData);
+	} else if (CurrentLapData > SecondBestLapData) {
+		SecondBestLapData = CurrentLapData;
 	}
 	LapTimes.Add(CurrentLapData);
+
+	GameHUD->UpdateCurrentCheckpoint(CurrentLapTime);
 
 	CurrentLapTime = 0.0f;
 	CurrentLapTimeLost = 0.0f;
@@ -129,6 +137,9 @@ void ARaceGameModeBase::Tick(float DeltaTime) {
 	float CurrentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
 
 	CurrentLapTime = CurrentTime - LapStartTime;
+
+	float RemainingGameTime = GetWorld()->GetTimerManager().GetTimerRemaining(EndGameTimer);
+	GameHUD->UpdateRemainingGameTime(RemainingGameTime);
 
 	GameHUD->UpdateCurrentLapTime(CurrentLapTime, CurrentLapTimeLost);
 }

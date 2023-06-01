@@ -19,6 +19,10 @@ UCLASS()
 class PRAKTYKI_API UCarWidget : public UUserWidget {
 	GENERATED_BODY()
 private:
+	FTimerHandle HideCheckpointTimeTimerHandle;
+
+	void HideCheckpointTimes();
+
 public:
 	UCarWidget(const FObjectInitializer &ObjectInitializer);
 
@@ -31,6 +35,8 @@ public:
 	void UpdateBestLapTime(LapData NewBestLapData);
 	void UpdateCurrentCheckpoint(float NewCurrentCheckpoint);
 	void UpdateRemainingTime(int NewRemainingTime);
+	void UpdateRemainingGameTime(float NewRemainingGameTime);
+	void UpdateCheckpointDifference(float NewCheckpointDifference);
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UTextBlock *CurrentSpeedText;
@@ -48,6 +54,9 @@ public:
 	class UTextBlock *RemainingTimeText;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
+	class UTextBlock *RemainingGameTimeText;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UTextBlock *CurrentCheckpointText;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
@@ -55,6 +64,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class URichTextBlock *BestLapTimeText;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
+	class URichTextBlock *CheckpointDifferenceText;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, meta = (BindWidget))
 	class UProgressBar *CurrentSpeedProgressBar;
